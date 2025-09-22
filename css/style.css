@@ -1,0 +1,22 @@
+
+body {
+  background-color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  text-align: center;
+  margin: 0;
+}
+
+table { margin: 100px auto }
+.cell {
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.cell img { width: 25px; height: auto; user-select: none; pointer-events: none }
+
+.floor { background-color: rgb(183, 183, 183) }
+
+.hide { display: none } /* תואם ל-HTML שלך (victory hide) */

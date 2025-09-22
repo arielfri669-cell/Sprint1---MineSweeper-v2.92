@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Mister Balls</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" href="img/ball.png" type="image/png">
+  </head>
+
+  <body onkeyup="handleKey(event)" onload="initGame()">
+    <h1>Mine Sweeper</h1>
+    <h2>Score  : <span>0</span></h2>
+    
+
+    <div class="victory hide">
+      <h3>Victory!</h3>
+      <button onclick="restartGame()">Restart</button>
+    </div>
+
+    <table>
+      <tbody class="board"></tbody>
+    </table>
+
+    <script src="js/util.js"></script>
+    <script src="js/gametest.js"></script>
+  </body>
+</html>
