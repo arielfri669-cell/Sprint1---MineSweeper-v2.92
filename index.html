@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Mister Balls</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="icon" href="img/ball.png" type="image/png">
-  </head>
 
-  <body onkeyup="handleKey(event)" onload="initGame()">
-    <h1>Mine Sweeper</h1>
-    <h2>Score  : <span>0</span></h2>
-    
+<head>
+  <meta charset="utf-8" />
+  <title>Mine Sweeper</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="img/bomb.png" type="image/png">
+</head>
 
-    <div class="victory hide">
-      <h3>Victory!</h3>
-      <button onclick="restartGame()">Restart</button>
-    </div>
+<body onkeyup="handleKey(event)" onload="initGame()">
+  <h1>Mine Sweeper</h1>
+  <h2>Score : <span>0</span></h2>
 
-    <table>
-      <tbody class="board"></tbody>
-    </table>
 
-    <script src="js/util.js"></script>
-    <script src="js/gametest.js"></script>
-  </body>
+  <div class="victory hide">
+    <h3>Victory!</h3>
+    <button onclick="restartGame()">Restart</button>
+  </div>
+
+  <div class="btns">
+    <button onclick="SetLevel(4)">4 × 4</button>
+    <button onclick="SetLevel(8)">8 × 8</button>
+    <button onclick="SetLevel(12)">12 × 12</button>
+  </div>
+
+  <table>
+    <tbody class="board"></tbody>
+  </table>
+
+  <script src="js/util.js"></script>
+  <script src="js/gametest.js"></script>
+</body>
+
 </html>

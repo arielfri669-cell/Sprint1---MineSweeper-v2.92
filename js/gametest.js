@@ -1,52 +1,79 @@
 
 'use strict'
 
-
+// set board size
 var gLevel = {
-    SIZE: 6,
+    SIZE: 10,
     MINES: 2
 }
 
+// The model
+var gBoard =
+{
+    minesAroundCount: 4,
+    isRevealed: false,
+    isMine: false,
+    isMarked: false
+}
+
+// Holds the current game state
+var gGame = {
+    isOn: false,
+    revealedCount: 0,    // How many cells are revealed
+    markedCount: 0,      // How many cells are flagd
+    secsPassed: 0        // How many seconds passed
+}
+
 const NUM1 = ''
-const NUM2 = '#'
+const WALL = '#'
 const BOME_IMG = '<img src="img/bome.png">'
 
-// const gBoard = 
-// { 
-//     minesAroundCount: 4, 
-//     isRevealed: false, 
-//     isMine: false, 
-//     isMarked: false 
-// }
-var board
+
 
 function initGame() {
     console.log(createMat(4, 4))
 
-    board = buildBoard()
-    renderBoard(board, '.board')
+    gBoard = buildBoard()
+    renderBoard(gBoard, '.board')
 
 }
 
 function buildBoard() {
-    const size = gLevel.SIZE
+    var size = gLevel.SIZE
     const board = []
 
     for (var i = 0; i < size; i++) {
         board.push([])
 
         for (var j = 0; j < size; j++) {
-            board[i][j] = NUM1
-
-            if (i === 0 || i === size - 1 || j === 0 || j === size - 1) {
-                board[i][j] = NUM2
-            }
+            // board[i][j] = NUM1
+            board[i][j] = (Math.random() > 0.9) ? BOME_IMG : ''
+          
+             //  board[i][j] = makeCell()
+          
         }
     }
-    // להמשך נדרש להציב רנדומלי מוקשים בלוח !!!
-    board[2][2] = board[3][4] = BOME_IMG
-    // setMinesNegsCount(board)
+  
+
+    // board[2][2] = board[3][4] = BOME_IMG
+    setMinesNegsCount(2, 3, board)
+    var pos = board[2][3] = '*' // בדיקת ספירה ניסוי
+
     return board
+}
+
+function SetLevel(size) {
+    gLevel.SIZE = size
+    initGame()
+}
+
+function makeCell() {
+  return {
+    isMine: false,
+    isRevealed: false,
+    isMarked: false,
+    minesAroundCount: 0
+  }
 }
 
 // בדיקת תאים רקים במטריצה
@@ -54,18 +81,36 @@ function buildBoard() {
 // עם תא  = מוקש 
 
 // בדיקת מוקשים מסביב לתא
-// function setMinesNegsCount(board) {
-//     var minesAroundCount = 0
-//     for (var i = gLevel.SIZE - 1; i <= gLevel.SIZE + 1; i++) {
-//         if (i < 0 || i >= board.length) continue
-//         for (var j = gLevel.SIZE - 1; j <= gLevel.SIZE + 1; j++) {
-//             if (j < 0 || j >= board[0].length) continue
-//             if (i === rowIdx && j === colIdx) continue
-//             if (board[i][j].gameElement === BALL) minesAroundCount++
-//         }
-//     }
-//     // const elNeighbors = document.querySelector('h2 span')
-//     // elNeighbors.innerText = minesAroundCount
-//     console.log(minesAroundCount);
-    
-// }
+function setMinesNegsCount(rowIdx, colIdx, board) {
+    var minesAroundCount = 0
+    for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
+        if (i < 0 || i >= board.length) continue
+        for (var j = colIdx - 1; j <= colIdx + 1; j++) {
+            if (j < 0 || j >= board[i].length) continue
+            if (i === rowIdx && j === colIdx) continue
+            if (board[i][j] === BOME_IMG) minesAroundCount++
+
+        }
+    }
+    // const elNeighbors = document.querySelector('h2 span')
+    // elNeighbors.innerText = minesAroundCount
+    console.log(minesAroundCount);
+    return minesAroundCount
+}
+
+function onCellClicked() {  // Reveal the cell
+
+}
+
+function onCellMarked(elCell, i, j) {
+
+}
+
+// reveal neighbors.
+function expandReveal(board, elCell, i, j) {
+
+}
+
+function checkGameOver() {
+
+}
