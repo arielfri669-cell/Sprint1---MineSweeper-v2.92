@@ -5,10 +5,10 @@
   <meta charset="utf-8" />
   <title>Mine Sweeper</title>
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="icon" href="img/bomb.png" type="image/png">
+  <link rel="icon" href="img/bome.png" type="image/png">
 </head>
 
-<body onkeyup="handleKey(event)" onload="initGame()">
+<body onload="initGame()">
   <h1>Mine Sweeper</h1>
   <h2>Score : <span>0</span></h2>
 
@@ -19,9 +19,9 @@
   </div>
 
   <div class="btns">
-    <button onclick="SetLevel(4)">4 × 4</button>
-    <button onclick="SetLevel(8)">8 × 8</button>
-    <button onclick="SetLevel(12)">12 × 12</button>
+    <button onclick="SetLevel(4)">Beginner</button>
+    <button onclick="SetLevel(8)">Medium</button>
+    <button onclick="SetLevel(12)">Expert</button>
   </div>
 
   <table>
@@ -29,7 +29,7 @@
   </table>
 
   <script src="js/util.js"></script>
-  <script src="js/gametest.js"></script>
+  <script src="js/game.js"></script>
 </body>
 
 </html>
