@@ -11,11 +11,15 @@ function renderBoard(mat, selector) {
       var className = 'cell cell-' + i + '-' + j
 
       var content = ''
-      if (cell.isRevealed) {
+      if (cell.isRevealed) {   // תא גלוי : מציבים מוקש או מספר
         content = cell.isMine ? BOME_IMG : (cell.minesAroundCount || '')
+      }  else {
+        // תא מוסתר: אם מסומן בדגל – מציגים דגל
+        content = cell.isMarked ? FLAG__IMG : ''
       }
-
-      strHTML += '<td class="' + className + '">' + content + '</td>'
+    //  strHTML += '<td class="' + className + '" onclick="onCellClicked(this,' + i + ',' + j + ')">' + content + '</td>'
+      strHTML += 
+      '<td class="' + className + '" onclick="onCellClicked(this,' + i + ',' + j + ')" oncontextmenu="onCellMarked(this,' + i + ',' + j + '); return false;">' + content + '</td>'
     }
     strHTML += '</tr>'
   }
@@ -31,3 +35,4 @@ function getRandomIntInclusive(min, max) {
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
+

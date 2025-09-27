@@ -7,6 +7,12 @@ body {
   margin: 0;
 }
 
+#flags-panel{
+  margin: 10px auto 24px;  
+  display: inline-block;   
+  padding: 4px 8px;        
+}
+
  button {
       margin: 0 5px;
       padding: 8px 16px;
@@ -24,6 +30,9 @@ table { margin: 100px auto }
 }
 .cell img { width: 25px; height: auto; user-select: none; pointer-events: none }
 
+.cell { cursor: default; }      
+.cell:hover { cursor: pointer; }
+
 .floor { background-color: rgb(183, 183, 183) }
 
-.hide { display: none } /* תואם ל-HTML שלך (victory hide) */
+.hide { display: none } 
