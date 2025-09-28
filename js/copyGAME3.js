@@ -36,7 +36,6 @@ function initGame() {
     gBoard = buildBoard()              // לוח ריק, תאים מוסתרים
     renderBoard(gBoard, '.board')
     updateFlagsPanel() // מעדכן את לוח הדגלים
-    setEmoji('happy')
 }
 
 function buildBoard() {
@@ -129,12 +128,6 @@ function onCellClicked(elcell, i, j) {
     cell.isRevealed = true            // חושפים תא
     gGame.revealedCount++
     renderBoard(gBoard, '.board')     // מציג מוקש/מספר בהתאם
-
-    if (cell.isMine) {
-        setEmoji('dead')
-    } else {
-        flashSurprised()
-    }
 }
 
 function onCellMarked(elCell, i, j) {
@@ -159,6 +152,9 @@ function onCellMarked(elCell, i, j) {
     updateFlagsPanel()
 }
 
+function onEmojiClick(action) {
+    
+}
 
 function updateFlagsPanel() { // אחריות על הצגת הדגלים בלוח
     var left = gLevel.MINES - gGame.markedCount

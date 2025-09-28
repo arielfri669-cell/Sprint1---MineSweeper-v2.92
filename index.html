@@ -15,11 +15,32 @@
     Flags: <span id="flags-left">0</span>/<span id="flags-max">0</span>
   </div>
 
+  <div id="emoji-panel">
+    <button id="emoji-btn" class="emoji-btn" onclick="onEmojiClick()">
+      <img id="emoji-img" src="img/emoji_happy.png" alt="🙂">
+    </button>
+  </div>
+
   <div class="btns">
     <button onclick="SetLevel(4)">Beginner</button>
     <button onclick="SetLevel(8)">Medium</button>
     <button onclick="SetLevel(12)">Expert</button>
   </div>
+
+  <!-- <button class="icon-btn" onclick="onEmojiClick('resetgame')">
+    <img src="img/emoji_happy.png" alt="Restart game">
+  </button>
+
+  <img class="icon-img" src="img/emoji_surprised.png" alt="ClickOnGoodCell">
+  
+
+  <button class="icon-btn" onclick="onEmojiClick('winsTheGame')">
+    <img src="img/emoji_happy.gif" alt="winsTheGame">
+  </button>
+
+   <button class="icon-btn" onclick="onEmojiClick('endTheGame')">
+    <img src="img/emoji_dead.gif" alt="endTheGame">
+  </button> -->
 
   <table>
     <tbody class="board"></tbody>
@@ -27,6 +48,8 @@
 
   <script src="js/util.js"></script>
   <script src="js/game.js"></script>
+  <script src="js/emoji.js"></script>
+
 </body>
 
 </html>

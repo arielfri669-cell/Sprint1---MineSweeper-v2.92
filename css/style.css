@@ -19,7 +19,51 @@ body {
       font-size: 16px;
       cursor: pointer;
     }
-    
+
+.icon-btn{
+  border:none;
+  background:transparent;
+  padding:20px;
+  margin:0 8px;
+  cursor:pointer;
+}
+.icon-btn img{
+  width:42px;
+  height:auto;
+  display:block;
+} 
+
+.icon-img{
+  border:none;
+  background:transparent;
+  padding:20px;
+  margin:0 8px;
+  cursor:pointer;
+}
+.icon-img{
+   width:42px;
+  height:auto;
+  display:block;
+}
+
+#emoji-panel{
+  margin: 8px auto 12px;
+}
+.emoji-btn{
+  border:none;
+  background:transparent;
+  padding:8px;
+  cursor:pointer;
+}
+#emoji-img{
+  width:48px;         /* גודל אחיד לכל הקבצים (PNG/GIF) */
+  height:48px;
+  object-fit:contain; /* משמר יחסים */
+  display:block;
+  user-select:none;
+  pointer-events:none;
+}
+
 table { margin: 100px auto }
 .cell {
   width: 40px;
