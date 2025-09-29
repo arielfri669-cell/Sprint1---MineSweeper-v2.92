@@ -25,12 +25,13 @@ var gGame = {
 }
 
 
-const BOME_IMG = '<img src="img/bome.png" alt="💣" onerror="this.replaceWith(document.createTextNode(\'💣\'))">'
-const FLAG__IMG = '<img src="img/flag1.png" alt="F" onerror="this.replaceWith(document.createTextNode(\'💣\'))">'
-const EMOJI_HAPPY = '<img src="img/emoji_happy.png" alt="F" onerror="this.replaceWith(document.createTextNode(\'💣\'))">'
+const BOME_IMG = '<img src="img/bome.png" alt="💣">'
+const FLAG__IMG = '<img src="img/flag1.png" alt="F">'
+const EMOJI_HAPPY = '<img src="img/emoji_happy.png" alt="F">'
 
 function initGame() {
     gGame.isOn = false                 // עדיין לא פוזרו מוקשים
+    gGame.isOver = false
     gGame.markedCount = 0        // איפוס מכסת כמות הדגלים
     gGame.revealedCount = 0
     gBoard = buildBoard()              // לוח ריק, תאים מוסתרים
@@ -115,6 +116,7 @@ function setMinesNegsCount(rowIdx, colIdx, board) {
 
 }
 function onCellClicked(elcell, i, j) {
+    if (gGame.isOver) return
     var cell = gBoard[i][j]
 
     if (cell.isMarked) return // אם יש דגל על התא – לא עושים כלום
@@ -126,26 +128,44 @@ function onCellClicked(elcell, i, j) {
     }
 
     if (cell.isRevealed) return       // בדיקה עם התא חשוף כבר
-    cell.isRevealed = true            // חושפים תא
-    gGame.revealedCount++
-    renderBoard(gBoard, '.board')     // מציג מוקש/מספר בהתאם
+    // cell.isRevealed = true            // חושפים תא
+    // gGame.revealedCount++
+    // renderBoard(gBoard, '.board')     // מציג מוקש/מספר בהתאם
 
     if (cell.isMine) {
-        setEmoji('dead')
-    } else {
-        flashSurprised()
+        endGame(false)
+        return
+        //     setEmoji('dead')
+        // } else {
+        //     flashSurprised()
     }
+
+    revealCell(i, j)
+
+    // אם 0 שכנים ,הרחבת שכנים
+    if (cell.minesAroundCount === 0) {
+        expandReveal(gBoard, i, j)
+    }
+    renderBoard(gBoard, '.board')
+
+    // חיווי אימוג'י קצר אם עדיין משחקים
+    if (!gGame.isOver) flashSurprised()
+
+    // בדיקת ניצחון 
+    //   if (!gGame.isOver) checkVictory()
 }
 
 function onCellMarked(elCell, i, j) {
+    if (gGame.isOver) return
     var cell = gBoard[i][j]
     if (cell.isRevealed) return
 
     //תנאי להגבלת הדגלים לפי כמות המוקשים
-    if (!cell.isMarked && gGame.markedCount >= gLevel.MINES) {
+    // if (!cell.isMarked && gGame.markedCount >= gLevel.MINES) {
 
-        return
-    }
+    //     return
+    // }
+    if (!cell.isMarked && gGame.markedCount >= gLevel.MINES) return
 
     if (cell.isMarked) {
         cell.isMarked = false
@@ -157,8 +177,9 @@ function onCellMarked(elCell, i, j) {
 
     renderBoard(gBoard, '.board')               // עדכון UI מיידי
     updateFlagsPanel()
-}
 
+    if (!gGame.isOver) checkVictory()
+}
 
 function updateFlagsPanel() { // אחריות על הצגת הדגלים בלוח
     var left = gLevel.MINES - gGame.markedCount
