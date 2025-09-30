@@ -24,25 +24,18 @@ var gGame = {
     secsPassed: 0        // How many seconds passed
 }
 
-var gTimerInterval = null
-var gTimerStartMs = null
 
-const BOME_IMG = '<img src="img/bome.png" alt="💣">'
-const FLAG__IMG = '<img src="img/flag1.png" alt="F">'
-const EMOJI_HAPPY = '<img src="img/emoji_happy.png" alt="F">'
- 
+const BOME_IMG = '<img src="img/bome.png" alt="💣" onerror="this.replaceWith(document.createTextNode(\'💣\'))">'
+const FLAG__IMG = '<img src="img/flag1.png" alt="F" onerror="this.replaceWith(document.createTextNode(\'💣\'))">'
+const EMOJI_HAPPY = '<img src="img/emoji_happy.png" alt="F" onerror="this.replaceWith(document.createTextNode(\'💣\'))">'
+
 function initGame() {
-    stopTimer(true)  
     gGame.isOn = false                 // עדיין לא פוזרו מוקשים
-    gGame.isOver = false
     gGame.markedCount = 0        // איפוס מכסת כמות הדגלים
     gGame.revealedCount = 0
     gBoard = buildBoard()              // לוח ריק, תאים מוסתרים
     renderBoard(gBoard, '.board')
     updateFlagsPanel() // מעדכן את לוח הדגלים
-    setEmoji('happy')
-    initLivesUI() // אתחול לבבות וכפתור
-
 }
 
 function buildBoard() {
@@ -121,7 +114,6 @@ function setMinesNegsCount(rowIdx, colIdx, board) {
 
 }
 function onCellClicked(elcell, i, j) {
-    if (gGame.isOver) return
     var cell = gBoard[i][j]
 
     if (cell.isMarked) return // אם יש דגל על התא – לא עושים כלום
@@ -130,52 +122,23 @@ function onCellClicked(elcell, i, j) {
         placeMines(gBoard, i, j)       // אין מוקש בתא הראשון שנלחץ
         setAllMinesNegsCount(gBoard)
         gGame.isOn = true
-         startTimer()
     }
 
     if (cell.isRevealed) return       // בדיקה עם התא חשוף כבר
-    // cell.isRevealed = true            // חושפים תא
-    // gGame.revealedCount++
-    // renderBoard(gBoard, '.board')     // מציג מוקש/מספר בהתאם
-
-    if (cell.isMine) {
-  if (gLifeModeActive && gLivesRemaining > 0 && !gLifeBreakInProgress) {
-    // במצב חיים: לא חושפים את המוקש, לא מסיימים משחק — רק "שורפים" לב
-    consumeLife()
-    flashSurprised() // חיווי קצר
-    return
-  } else {
-    endGame(false)
-    return
-  }
-}
-
-    revealCell(i, j)
-
-    // אם 0 שכנים ,הרחבת שכנים
-    if (cell.minesAroundCount === 0) {
-        expandReveal(gBoard, i, j)
-    }
-    renderBoard(gBoard, '.board')
-
-    // חיווי אימוג'י קצר אם עדיין משחקים
-    if (!gGame.isOver) flashSurprised()
-
-    // בדיקת ניצחון 
-    //   if (!gGame.isOver) checkVictory()
+    cell.isRevealed = true            // חושפים תא
+    gGame.revealedCount++
+    renderBoard(gBoard, '.board')     // מציג מוקש/מספר בהתאם
 }
 
 function onCellMarked(elCell, i, j) {
-    if (gGame.isOver) return
     var cell = gBoard[i][j]
     if (cell.isRevealed) return
 
     //תנאי להגבלת הדגלים לפי כמות המוקשים
-    // if (!cell.isMarked && gGame.markedCount >= gLevel.MINES) {
+    if (!cell.isMarked && gGame.markedCount >= gLevel.MINES) {
 
-    //     return
-    // }
-    if (!cell.isMarked && gGame.markedCount >= gLevel.MINES) return
+        return
+    }
 
     if (cell.isMarked) {
         cell.isMarked = false
@@ -187,8 +150,10 @@ function onCellMarked(elCell, i, j) {
 
     renderBoard(gBoard, '.board')               // עדכון UI מיידי
     updateFlagsPanel()
+}
 
-    if (!gGame.isOver) checkVictory()
+function onEmojiClick(action) {
+    
 }
 
 function updateFlagsPanel() { // אחריות על הצגת הדגלים בלוח
@@ -197,45 +162,4 @@ function updateFlagsPanel() { // אחריות על הצגת הדגלים בלו�
     var elMax = document.getElementById('flags-max')
     if (elLeft) elLeft.textContent = left
     if (elMax) elMax.textContent = gLevel.MINES
-}
-
-function startTimer() {
-  if (gTimerInterval) return            // כבר רץ
-  gTimerStartMs = Date.now()
-  updateTimerDom(0)
-  gTimerInterval = setInterval(function () {
-    var elapsed = Date.now() - gTimerStartMs
-    var dayMs = 24 * 60 * 60 * 1000
-    if (elapsed >= dayMs) {
-      elapsed = dayMs
-      updateTimerDom(elapsed)
-      stopTimer(false)                  // עצור ב-24 שעות
-      return
-    }
-    updateTimerDom(elapsed)
-  }, 1000)
-}
-
-function updateTimerDom(ms) {
-  var totalSec = Math.floor(ms / 1000)
-  var hh = Math.floor(totalSec / 3600)
-  var mm = Math.floor((totalSec % 3600) / 60)
-  var ss = totalSec % 60
-  var txt =
-    (hh < 10 ? '0' + hh : '' + hh) + ':' +
-    (mm < 10 ? '0' + mm : '' + mm) + ':' +
-    (ss < 10 ? '0' + ss : '' + ss)
-  var el = document.getElementById('timer-text')
-  if (el) el.textContent = txt
-}
-
-function stopTimer(resetToZero) {
-  if (gTimerInterval) {
-    clearInterval(gTimerInterval)
-    gTimerInterval = null
-  }
-  if (resetToZero) {
-    gTimerStartMs = null
-    updateTimerDom(0)   // מציג 00:00:00
-  }
 }

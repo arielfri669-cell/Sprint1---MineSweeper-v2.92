@@ -15,32 +15,57 @@
     Flags: <span id="flags-left">0</span>/<span id="flags-max">0</span>
   </div>
 
+  <div id="timer-panel" aria-label="Timer">
+    <span id="timer-text">00:00:00</span>
+  </div>
+
   <div id="emoji-panel">
     <button id="emoji-btn" class="emoji-btn" onclick="onEmojiClick()">
       <img id="emoji-img" src="img/emoji_happy.png" alt="🙂">
     </button>
   </div>
 
-  <div class="btns">
-    <button onclick="SetLevel(4)">Beginner</button>
-    <button onclick="SetLevel(8)">Medium</button>
-    <button onclick="SetLevel(12)">Expert</button>
+ 
+
+  <img id="warship-img" src="img/warship.png" alt="Warship" loading="lazy" decoding="async">
+
+  <footer id="site-footer" aria-label="Copyright">
+    <div class="foot-line1">© Ariel Fridman</div>
+    <div class="foot-line2">2025</div>
+  </footer>
+
+   <aside id="settings-bar" aria-label="Game settings">
+  <div class="settings-inner">
+    <div class="settings-title">Difficulty level</div>
+    <div class="settings-buttons">
+      <button onclick="SetLevel(4)">Beginner</button>
+      <button onclick="SetLevel(8)">Medium </button>
+      <button onclick="SetLevel(12)">Expert </button>
+    </div>
   </div>
+</aside>
 
-  <!-- <button class="icon-btn" onclick="onEmojiClick('resetgame')">
-    <img src="img/emoji_happy.png" alt="Restart game">
-  </button>
+<aside id="lives-bar" aria-label="Remaining Lives">
+  <div class="settings-inner">
+    <div class="settings-title">Remaining Lives</div>
 
-  <img class="icon-img" src="img/emoji_surprised.png" alt="ClickOnGoodCell">
-  
+    <div class="lives-row" aria-label="Lives row">
+      <div class="hearts" aria-label="Hearts">
+        <img class="life" src="img/sparkling_heart.gif" alt="Life 1" loading="lazy" decoding="async">
+        <img class="life" src="img/sparkling_heart.gif" alt="Life 2" loading="lazy" decoding="async">
+        <img class="life" src="img/sparkling_heart.gif" alt="Life 3" loading="lazy" decoding="async">
+      </div>
 
-  <button class="icon-btn" onclick="onEmojiClick('winsTheGame')">
-    <img src="img/emoji_happy.gif" alt="winsTheGame">
-  </button>
-
-   <button class="icon-btn" onclick="onEmojiClick('endTheGame')">
-    <img src="img/emoji_dead.gif" alt="endTheGame">
-  </button> -->
+      <!-- כפתור מצב חיים (toggle) -->
+      <button id="life-toggle"
+              class="life-toggle off"
+              type="button"
+              aria-pressed="false"
+              title="Toggle lives mode"
+              onclick="toggleLifeMode(this)"></button>
+    </div>
+  </div>
+</aside>
 
   <table>
     <tbody class="board"></tbody>
@@ -50,6 +75,8 @@
   <script src="js/game.js"></script>
   <script src="js/emoji.js"></script>
   <script src="js/checkgame.js"></script>
+<script src="js/gamebar.js"></script>
+  
 
 
 </body>

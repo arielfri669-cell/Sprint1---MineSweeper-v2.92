@@ -30,7 +30,7 @@ var gTimerStartMs = null
 const BOME_IMG = '<img src="img/bome.png" alt="💣">'
 const FLAG__IMG = '<img src="img/flag1.png" alt="F">'
 const EMOJI_HAPPY = '<img src="img/emoji_happy.png" alt="F">'
- 
+
 function initGame() {
     stopTimer(true)  
     gGame.isOn = false                 // עדיין לא פוזרו מוקשים
@@ -41,8 +41,6 @@ function initGame() {
     renderBoard(gBoard, '.board')
     updateFlagsPanel() // מעדכן את לוח הדגלים
     setEmoji('happy')
-    initLivesUI() // אתחול לבבות וכפתור
-
 }
 
 function buildBoard() {
@@ -139,16 +137,12 @@ function onCellClicked(elcell, i, j) {
     // renderBoard(gBoard, '.board')     // מציג מוקש/מספר בהתאם
 
     if (cell.isMine) {
-  if (gLifeModeActive && gLivesRemaining > 0 && !gLifeBreakInProgress) {
-    // במצב חיים: לא חושפים את המוקש, לא מסיימים משחק — רק "שורפים" לב
-    consumeLife()
-    flashSurprised() // חיווי קצר
-    return
-  } else {
-    endGame(false)
-    return
-  }
-}
+        endGame(false)
+        return
+        //     setEmoji('dead')
+        // } else {
+        //     flashSurprised()
+    }
 
     revealCell(i, j)
 
