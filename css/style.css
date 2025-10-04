@@ -1,93 +1,5 @@
 
-body {
-  background-color: black;
-  font-family: Arial, Helvetica, sans-serif;
-  color: white;
-  text-align: center;
-  margin: 0;
-}
-
-#flags-panel{
-  margin: 10px auto 24px;  
-  display: inline-block;   
-  padding: 4px 8px;        
-}
-
- button {
-      margin: 0 5px;
-      padding: 8px 16px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-.icon-btn{
-  border:none;
-  background:transparent;
-  padding:20px;
-  margin:0 8px;
-  cursor:pointer;
-}
-.icon-btn img{
-  width:42px;
-  height:auto;
-  display:block;
-} 
-
-.icon-img{
-  border:none;
-  background:transparent;
-  padding:20px;
-  margin:0 8px;
-  cursor:pointer;
-}
-.icon-img{
-   width:42px;
-  height:auto;
-  display:block;
-}
-
-#emoji-panel{
-  margin: 8px auto 12px;
-}
-.emoji-btn{
-  border:none;
-  background:transparent;
-  padding:8px;
-  cursor:pointer;
-}
-#emoji-img{
-  width:48px;         /* גודל אחיד לכל הקבצים (PNG/GIF) */
-  height:48px;
-  object-fit:contain; /* משמר יחסים */
-  display:block;
-  user-select:none;
-  pointer-events:none;
-}
-
-table { margin: 100px auto }
-.cell {
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  vertical-align: middle;
-  border: 1px solid rgba(255,255,255,0.06);
-}
-/* 
-#flags-panel{
-  margin: 10px auto 24px;
-  display: inline-block;
-  padding: 4px 8px;
-} */
-
-#timer-panel{
-  display: inline-block;
-  margin-left: 24px;       /* רווח מה־Flags */
-  padding: 4px 8px;
-  font-variant-numeric: tabular-nums; /* יישור ספרות יפה */
-  opacity: 0.9;
-}
-
-/* 00111 Navy theme base */
+/* --- משתנים --- */
 :root{
   --bg:#071521;
   --ink:#e9f3ff;
@@ -95,71 +7,97 @@ table { margin: 100px auto }
   --line:rgba(255,255,255,.08);
   --panel:rgba(255,255,255,.06);
   --panel-border:rgba(255,255,255,.14);
+
+  /* גבהי/מיקומי ברי צד ופוטר */
+  --footer-h:80px;
+
+  --settings-w: 280px;
+  --settings-top: 75px;
+  --settings-right: 24px;
+
+  --lives-w: 280px;
+  --lives-top: calc(var(--settings-top) + 200px);
+  --lives-right: var(--settings-right);
+  --life-size: 28px;
+  --life-gap: 12px;
+  --life-toggle: 28px;
+  --life-pad-x: 12px;
 }
 
-/* רקע נייבי רך */
+/* --- בסיס --- */
+*{ box-sizing:border-box }
+html,body{ height:100% }
 body{
-  background: radial-gradient(1200px 700px at 50% -10%, #0a2440 0%, var(--bg) 45%),
-              linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0) 40%);
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  color:white;                 /* תואם לקוד המקורי */
+  text-align:center;
+  background-color:black;      /* נשמר המראה המקורי */
+}
+button{
+  margin:0 5px;                /* הוחזר כדי לשמור מיקום כפתורים */
+  padding:8px 16px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* --- פאנלים עליונים: דגלים + טיימר --- */
+#flags-panel{
+  margin:10px auto 24px;
+  display:inline-block;
+  padding:4px 8px;
+}
+#timer-panel{
+  display:inline-block;
+  margin-left:24px;            /* רווח מה־Flags */
+  padding:4px 8px;
+  font-variant-numeric:tabular-nums;
+  opacity:.9;
+}
+
+/* --- אימוג'י --- */
+#emoji-panel{ margin:8px auto 12px }
+.emoji-btn{ border:none; background:transparent; padding:8px; cursor:pointer }
+#emoji-img{
+  width:48px; height:48px; object-fit:contain; display:block;
+  user-select:none; pointer-events:none;
+}
+
+/* --- טבלה / לוח --- */
+table{ margin:100px auto }     /* מוחזר 100px כדי לשחזר מיקום מדויק */
+.board{ border-collapse:separate; border-spacing:6px }
+.cell{
+  width:40px; height:40px;     /* מוחזר 40px המקורי */
+  text-align:center; vertical-align:middle;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.cell img{ width:25px; height:auto; user-select:none; pointer-events:none }
+.cell{ cursor:default }      
+.cell:hover{ cursor:pointer }
+.floor{ background-color: rgb(183, 183, 183) }
+.hide{ display:none }
+
+/* --- ערכת נייבי רכה + שדרוגים ויזואליים (מבלי לשנות פריסת הבסיס) --- */
+body{
+  background:
+    radial-gradient(1200px 700px at 50% -10%, #0a2440 0%, var(--bg) 45%),
+    linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0) 40%);
   color:var(--ink);
 }
 
-/* פאנלים: דגלים + טיימר */
+/* פאנלים ממוסגרים */
 #flags-panel, #timer-panel{
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: 12px;
   box-shadow: 0 1px 0 rgba(255,255,255,.05) inset, 0 8px 20px rgba(0,0,0,.25);
-  font-variant-numeric: tabular-nums;
   color: var(--muted);
 }
-#flags-panel { margin: 10px 8px 18px 0; }
-#timer-panel { margin: 10px 0 18px 24px; }
 
-/* כפתורי רמות – סגנון צי־ים */
-.btns{
-  display:flex; justify-content:center; gap:10px; margin:8px auto 18px;
-}
-.btns button{
-  background: linear-gradient(180deg, #0f2b45, #0b2135);
-  border:1px solid var(--panel-border);
-  color:var(--ink);
-  padding:10px 16px;
-  border-radius:10px;
-  cursor:pointer;
-  box-shadow: 0 6px 16px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.06) inset;
-  transition: transform .08s ease, box-shadow .15s ease, background .2s ease;
-}
-.btns button:hover{
-  transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.08) inset;
-}
-.btns button:active{
-  transform: translateY(0);
-  box-shadow: inset 0 2px 6px rgba(0,0,0,.35);
-}
+/* מסגרת סביב הלוח (לא חובה, אבל תואם ל"טעם" של ה-Navy) */
+.board{ border-spacing:6px }
 
-/* מסגרת סביב הלוח (רשות) */
-table { margin: 30px auto }
-.board { border-collapse: separate; border-spacing: 6px; }
-
-/* תא – בסיס */
-.cell{
-  width: 44px; height: 44px;
-  text-align: center; vertical-align: middle;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  position: relative;
-  user-select: none;
-  transition: transform .08s ease, box-shadow .12s ease, background .18s ease;
-  font-weight: 700; font-size: 18px;
-}
-
-/* מצב לפני לחיצה: מורם */
+/* תא – מצבים */
 .cell.is-hidden{
   background: linear-gradient(180deg, #123659, #0b2135);
   box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 8px 18px rgba(0,0,0,.4);
@@ -168,368 +106,84 @@ table { margin: 30px auto }
   transform: translateY(-1px);
   box-shadow: 0 12px 26px rgba(0,0,0,.5), 0 1px 0 rgba(255,255,255,.08) inset;
 }
-
-/* מצב אחרי לחיצה: שקוע */
 .cell.is-revealed{
   background: linear-gradient(180deg, #0b2135, #091a2b);
   box-shadow: inset 2px 3px 6px rgba(0,0,0,.55), inset -2px -3px 6px rgba(255,255,255,.04);
 }
-
-/* מוקש שנחשף – היילייט עדין */
 .cell.has-mine.is-revealed{
   background:
     radial-gradient(transparent 0 60%, rgba(255,0,0,.08)),
     linear-gradient(180deg, #10263f, #091a2b);
   border-color: rgba(255,0,0,.22);
 }
-
-/* דגל מושאר במצב מוסתר (לא “לחוץ”) */
-.cell.has-flag.is-hidden{ outline: 1px dashed rgba(255,255,255,.08); }
+.cell.has-flag.is-hidden{ outline: 1px dashed rgba(255,255,255,.08) }
 
 /* צבעי מספרים 1..8 */
-.n{ display:inline-block; transform: translateY(-1px); }
-.n-1{ color:#4eb1ff }  /* כחול ימי */
-.n-2{ color:#62d27d }  /* ירקרק */
-.n-3{ color:#ff6b6b }  /* אדום */
-.n-4{ color:#5a78ff }  /* כחול עמוק */
-.n-5{ color:#ffaf45 }  /* כתום-זהב */
-.n-6{ color:#42e3d6 }  /* טורקיז */
-.n-7{ color:#e8e8e8 }  /* בהיר */
-.n-8{ color:#94a3b8 }  /* אפרפר-כחלחל */
+.n{ display:inline-block; transform: translateY(-1px) }
+.n-1{ color:#4eb1ff }
+.n-2{ color:#62d27d }
+.n-3{ color:#ff6b6b }
+.n-4{ color:#5a78ff }
+.n-5{ color:#ffaf45 }
+.n-6{ color:#42e3d6 }
+.n-7{ color:#e8e8e8 }
+.n-8{ color:#94a3b8 }
 
-#site-footer{
-  margin: 38px 0 0;
-  padding: 14px 12px 22px;
-  background: var(--panel, rgba(255,255,255,.06));
-  border-top: 1px solid var(--panel-border, rgba(255,255,255,.14));
-  color: var(--muted, #a8c1da);
-  text-align: center;
-  box-shadow: 0 -6px 18px rgba(0,0,0,.25) inset;
-}
-#site-footer .foot-line1{
-  font-weight: 600;
-  letter-spacing: .2px;
-  color: var(--ink, #e9f3ff);
-}
-#site-footer .foot-line2{
-  margin-top: 6px;
-  opacity: .85;
-  font-variant-numeric: tabular-nums;
-  font-size: 0.95rem;
-}
-
+/* --- FOOTER: פס באורך 520px, 1cm מעל תחתית המסך --- */
 #site-footer{
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 1cm;                 /* ← 1 ס״מ מתחתית המסך */
-  margin: 0;                   /* מבטל מרווחים קודמים */
+  left: 0; right: 0;
+  bottom: 1cm;                 /* 1 ס״מ מהתחתית */
+  margin: 0;
   z-index: 1000;               /* מעל תוכן אחר */
-}
-
-
-/* 00122: Make footer use the variable height (שומר על המראה הקיים) */
-#site-footer{
   min-height: var(--footer-h);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: flex; flex-direction: column;
+  align-items: flex-start;     /* מתחיל משמאל כמו שביקשת */
   justify-content: center;
-}
-
-/* 00123: Keep content clear of the fixed footer (מחליף כל כלל קודם דומה) */
-body{
-  padding-bottom: calc(1cm + var(--footer-h) + 16px);
-}
-
-/* 00124: Warship image pinned left, just above the footer */
-#warship-img{
-  position: fixed;
-  left: 12px;                              /* צמוד לשמאל */
-  bottom: 100px;
-  width: clamp(220px, 28vw, 520px);        /* רספונסיבי */
-  height: auto;
-  z-index: 900;                            /* מתחת לפוטר (שבבד"כ על 1000) */
-  user-select: none;
-  pointer-events: none;                    /* דקורטיבי—לא תופס קליקים */
-  filter: drop-shadow(0 10px 22px rgba(0,0,0,.35));
-}
-
-/* כדי שהתוכן לא “ייכנס מתחת” לפוטר */
-body{
-  padding-bottom: calc(1cm + 80px);  /* 1 ס״מ + גובה פוטר מקורב */
-}
-
-:root{
-  /* === לשינוי מהיר של מיקום/גודל הבר === */
-  --settings-w: 280px;       /* רוחב בר */
-  --settings-top: 75px;     /* מרחק מהחלק העליון */
-  --settings-right: 24px;    /* מרחק מהימין */
-  /* ===================================== */
-}
-
-/* כרטיס צף */
-#settings-bar{
-  position: fixed;
-  top: var(--settings-top);
-  right: var(--settings-right);
-  width: var(--settings-w);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-  border: 1px solid rgba(255,255,255,0.07);
-  box-shadow: 0 12px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
-  text-align: start;
-  backdrop-filter: blur(2px);
-  z-index: 10;
-}
-.settings-inner{ padding: 14px; }
-
-.settings-title{
-  margin: 0 0 10px;
-  font-size: 14px;
-  letter-spacing:.6px;
-  text-transform: uppercase;
-  color: #9bb4c9;
-}
-
-/* כפתורי רמות — בסדר עולה, רווחים פנימיים וחיצוניים */
-.settings-buttons{
-  display: flex;
-  flex-direction: column;
-  gap: 10px;                 /* רווח בין הכפתורים */
-}
-
-.settings-buttons button{
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid #245e8c;
-  background: linear-gradient(180deg, #1a3954, #10283f);
-  color: #e6eef8;
-  cursor: pointer;
-  font-weight: 600;
-  letter-spacing: .4px;
-  box-shadow: 0 6px 14px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05);
-  transition: transform .08s ease, filter .15s ease;
-}
-.settings-buttons button:hover{ transform: translateY(-1px); filter: brightness(1.05); }
-.settings-buttons button:active{ transform: translateY(0); filter: brightness(.98); }
-
-/* רספונסיבי — מצמצם ומוריד מעט על מסכים קטנים */
-@media (max-width: 900px){
-  :root{ --settings-w: 240px; --settings-right: 12px; --settings-top: 140px; }
-}
-@media (max-width: 700px){
-  :root{ --settings-w: 88vw; --settings-right: 6vw; --settings-top: 70vh; }
-  #settings-bar{ text-align:center; }
-  .settings-buttons{ flex-direction: row; justify-content: center; gap: 8px; flex-wrap: wrap; }
-  .settings-buttons button{ width: auto; min-width: 110px; }
-}
-
-#site-footer{
-  /* הפוטר נשאר פרוס על כל הרוחב כפי שהיה; רק מיישרים את הילדים לשמאל */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;   /* הילדים יתחילו משמאל */
-  justify-content: center;
-}
-
-/* שני קווי הטקסט בתוך "חלון" ברוחב 520px, מיושרים משמאל, טקסט ממורכז */
-#site-footer .foot-line1,
-#site-footer .foot-line2{
-  width: 520px;              /* אורך התצוגה הרצוי */
-  max-width: 520px;
-  margin-left: 0;            /* מתחיל משמאל; כך ה"קיצור" הוא מימין לשמאל */
-  margin-right: auto;        /* דוחף את הקצה הימני שמאלה */
-  text-align: center;        /* טקסט ממורכז בתוך ה-520px */
-}
-
-#site-footer{
-  /* ההגדרות הקיימות (position/bottom וכו') יכולות להישאר.
-     פה אנחנו רק מבטלים את הרקע הרחב כדי שלא יכסה את כל המסך. */
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
-
-  /* שמירת קיבוע ומרכזת התוכן פנימית */
-  display: flex;
-  flex-direction: column;
-  align-items: center;      /* מרכז אופקי של התוכן */
-  justify-content: center;  /* מרכז אנכי של התוכן */
+  color: var(--muted);
+  text-align: left;
 }
+/* כדי שהתוכן לא ייכנס מתחת לפוטר – מוחזר הערך המקורי שלך */
+body{ padding-bottom: calc(1cm + 80px) }
 
-/* 00211 — “פס” הפוטר הצר: 520px, מיושר לשמאל (קיצור מימין לשמאל) */
 #site-footer::before{
   content: "";
   position: absolute;
-  left: 0;                  /* מתחיל מהשמאל → מתקצר מימין לשמאל */
+  left: 0;                  /* “קיצור” מימין לשמאל — מתחיל משמאל */
   bottom: 0;
-  width: 520px;             /* האורך הוויזואלי הרצוי */
+  width: 520px;             /* האורך הוויזואלי */
   height: 100%;
-  background: var(--panel, rgba(255,255,255,.06));
-  border: 1px solid var(--panel-border, rgba(255,255,255,.14));
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
   border-radius: 12px;
   box-shadow: 0 -6px 18px rgba(0,0,0,.25) inset;
-  z-index: -1;              /* הפס מאחורי הטקסט */
+  z-index: -1;
 }
-
-/* 00212 — מגבילים את שורות הטקסט ל־520px ומרכזים אותן */
 #site-footer .foot-line1,
 #site-footer .foot-line2{
-  width: 520px;
-  max-width: 520px;
-  text-align: center;       /* הטקסט ממורכז בתוך ה־520px */
-  margin: 0;                /* בלי הזזות מיותרות */
+  width: 520px; max-width: 520px;
+  margin: 0;                /* ללא הסטות */
+  text-align: center;       /* ממורכז בתוך ה־520px */
 }
-
-#site-footer{
-  align-items: flex-start !important; /* התוכן יתחיל משמאל, כמו ה-bar */
+#site-footer .foot-line1{
+  font-weight: 600; letter-spacing: .2px; color: var(--ink);
 }
-
-#site-footer::before{
-  left: 0;                /* הפס נשאר צמוד לשמאל */
-  width: 520px !important;/* אורך הפס */
-}
-
-
-
-:root{
-  --lives-w: 280px;                 /* רוחב הבר */
-  --lives-top: calc(var(--settings-top) + 200px); /* מיקום אנכי — מתחת ל-Game settings */
-  --lives-right: var(--settings-right);          /* אותו מרחק מהימין */
-  --life-size: 28px;                 /* גודל האיקון של לב אחד */
-}
-
-/* בסיס כרטיס צף – משתמשים באותם סגנונות כמו ההגדרות */
-#settings-bar,
-#lives-bar{
-  border-radius:16px;
-  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
-  border:1px solid rgba(255,255,255,0.07);
-  box-shadow:0 12px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
-  text-align:start;
-  backdrop-filter:blur(2px);
-  z-index:10;
-}
-
-/* מיקום וגודל נפרדים לכל בר */
-#settings-bar{
-  position:fixed;
-  top:var(--settings-top);
-  right:var(--settings-right);
-  width:var(--settings-w);
-}
-#lives-bar{
-  position:fixed;
-  top:var(--lives-top);
-  right:var(--lives-right);
-  width:var(--lives-w);
-}
-
-/* שורת הלבבות: רווחים פנימיים וחיצוניים */
-.lives-row{
-  display:flex;
-  justify-content:center;   /* מרכז את הלבבות בבר */
-  gap:12px;                 /* רווח בין לב ללב */
-  margin-top:10px;          /* רווח מהכותרת */
-  padding:6px 0 2px;        /* ריווח עדין בתוך הכרטיס */
-}
-.lives-row .life{
-  width:var(--life-size);
-  height:var(--life-size);
-  object-fit:contain;
-  user-select:none;
-  pointer-events:none;
-  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
-}
-
-/* רספונסיבי — מזיז ומקטין כמו ההגדרות */
-@media (max-width:900px){
-  :root{
-    --lives-w: 240px;
-    --lives-right: 12px;
-    --lives-top: calc(140px + 190px);
-  }
-}
-@media (max-width:700px){
-  :root{
-    --lives-w: 88vw;
-    --lives-right: 6vw;
-    --lives-top: calc(70vh + 120px);
-  }
-}
-
-#site-footer .foot-line1,
 #site-footer .foot-line2{
-  width: 520px !important;          /* אותו רוחב של הפס */
-  margin: 0 auto 0 0 !important;    /* מוצמד לשמאל (הימני auto) */
-  text-align: center !important;     /* הטקסט ממורכז בתוך ה־520px */
+  margin-top: 6px; opacity: .85; font-variant-numeric: tabular-nums; font-size: .95rem;
 }
 
-/* === פרמטרים לשינוי מהיר של בר החיים === */
-:root{
-  --lives-w: 280px;
-  --lives-top: calc(var(--settings-top) + 200px);
-  --lives-right: var(--settings-right);
-  --life-size: 28px;
-  --life-gap: 12px;
-  --life-toggle: 28px;           /* קוטר הכפתור העגול */
-  --life-pad-x: 12px;            /* ריווח אופקי פנימי של השורה */
-}
-
-/* פריסת שורת הלבבות + הכפתור מימין */
-#lives-bar .lives-row{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;     /* לבבות משמאל, כפתור מימין */
-  gap: 12px;
-  margin-top: 10px;
-  padding: 6px var(--life-pad-x) 2px; /* רווח מהדפנות */
-}
-
-/* אשכול הלבבות */
-#lives-bar .hearts{
-  display: flex;
-  align-items: center;
-  gap: var(--life-gap);               /* רווח בין לב ללב */
-}
-#lives-bar .life{
-  width: var(--life-size);
-  height: var(--life-size);
-  object-fit: contain;
+/* --- תמונת הספינה --- */
+#warship-img{
+  position: fixed;
+  left: 12px;
+  bottom: 100px;
+  width: clamp(220px, 28vw, 520px);  
+  height: auto;
+  z-index: 900;                      /* מתחת לפוטר */
   user-select: none;
   pointer-events: none;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,.35));
 }
-
-/* הכפתור העגול (toggle): אדום=כבוי, ירוק=דולק */
-.life-toggle{
-  width: var(--life-toggle);
-  height: var(--life-toggle);
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.22);
-  box-shadow: 0 6px 14px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06);
-  cursor: pointer;
-  margin-left: 12px;                  /* רווח מהלבבות */
-  margin-right: 6px;                  /* רווח מהדופן הימני של הבר */
-  transition: transform .08s ease, filter .15s ease, background .2s ease, border-color .2s ease;
-}
-.life-toggle.off{
-  background: radial-gradient(circle at 40% 35%, #cc2a2a, #8b1d1d 70%);
-  border-color: rgba(255,70,70,.45);
-}
-.life-toggle.on{
-  background: radial-gradient(circle at 40% 35%, #2fcb5a, #1f7a38 70%);
-  border-color: rgba(70,255,120,.45);
-}
-.life-toggle:hover{ transform: translateY(-1px); filter: brightness(1.05); }
-.life-toggle:active{ transform: translateY(0);   filter: brightness(.98); }
-
-.cell img { width: 25px; height: auto; user-select: none; pointer-events: none }
-
-.cell { cursor: default; }      
-.cell:hover { cursor: pointer; }
-
-.floor { background-color: rgb(183, 183, 183) }
-
-.hide { display: none } 

@@ -1,0 +1,334 @@
+/* --- Bars: Settings + Lives  --- */
+#settings-bar,
+#lives-bar{
+  position: fixed;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 12px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  text-align: start;
+  backdrop-filter: blur(2px);
+  z-index: 1010; /* גבוה מהלוח ומהספינה, נמוך מהפוטר */
+}
+#settings-bar{ top: var(--settings-top); right: var(--settings-right); width: var(--settings-w) }
+#lives-bar   { top: var(--lives-top);    right: var(--lives-right);   width: var(--lives-w) }
+
+.settings-inner{ padding: 14px }
+.settings-title{
+  margin: 0 0 10px;
+  font-size: 14px;
+  letter-spacing:.6px;
+  text-transform: uppercase;
+  color: #9bb4c9;
+}
+
+/* כפתורי רמות */
+.settings-buttons{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.settings-buttons button{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #245e8c;
+  background: linear-gradient(180deg, #1a3954, #10283f);
+  color: #e6eef8;
+  cursor: pointer;
+  font-weight: 600;
+  letter-spacing: .4px;
+  box-shadow: 0 6px 14px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.05);
+  transition: transform .08s ease, filter .15s ease;
+}
+.settings-buttons button:hover{ transform: translateY(-1px); filter: brightness(1.05) }
+.settings-buttons button:active{ transform: translateY(0);    filter: brightness(.98) }
+
+/* --- Lives row + toggle --- */
+#lives-bar .lives-row{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-top:10px; padding:6px var(--life-pad-x) 2px;
+}
+#lives-bar .hearts{
+  display:flex; align-items:center; gap:var(--life-gap)
+}
+#lives-bar .life{
+  width:var(--life-size); height:var(--life-size); object-fit:contain;
+  user-select:none; pointer-events:none;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));
+}
+.life-toggle{
+  width:var(--life-toggle); height:var(--life-toggle);
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.22);
+  box-shadow: 0 6px 14px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.06);
+  margin-left: 12px; margin-right: 6px;
+  transition: transform .08s ease, filter .15s ease, background .2s ease, border-color .2s ease;
+}
+.life-toggle.off{
+  background: radial-gradient(circle at 40% 35%, #cc2a2a, #8b1d1d 70%);
+  border-color: rgba(255,70,70,.45);
+}
+.life-toggle.on{
+  background: radial-gradient(circle at 40% 35%, #2fcb5a, #1f7a38 70%);
+  border-color: rgba(70,255,120,.45);
+}
+.life-toggle:hover{ transform: translateY(-1px); filter: brightness(1.05) }
+.life-toggle:active{ transform: translateY(0);   filter: brightness(.98) }
+
+/* --- רספונסיביות Settings/Lives --- */
+@media (max-width: 900px){
+  :root{
+    --settings-w: 240px; --settings-right: 12px; --settings-top: 140px;
+    --lives-w: 240px;    --lives-right: 12px;    --lives-top: calc(140px + 190px);
+  }
+}
+@media (max-width: 700px){
+  :root{
+    --settings-w: 88vw; --settings-right: 6vw; --settings-top: 70vh;
+    --lives-w: 88vw;    --lives-right: 6vw;    --lives-top: calc(70vh + 120px);
+  }
+  #settings-bar{ text-align:center }
+  .settings-buttons{ flex-direction: row; justify-content: center; gap: 8px; flex-wrap: wrap }
+  .settings-buttons button{ width: auto; min-width: 110px }
+}
+
+/* =========================
+  Hints bar
+   ========================= */
+:root{
+  --hints-w: var(--lives-w);                     /* רוחב בר */
+  --hints-right: var(--lives-right);             /* מרחק מהימין */
+  --hints-top: calc(var(--lives-top) + 96px);    /* מתחת ל-Lives, רווח קטן */
+  --hint-size: 35px;                             /* גודל אייקון מנורה */
+  --hint-gap: 12px;                              /* רווח בין מנורות */
+  --hint-pad-x: 12px;                            /* ריווח אופקי פנימי */
+}
+
+#hints-bar{
+  position: fixed;
+  top: var(--hints-top);
+  right: var(--hints-right);
+  width: var(--hints-w);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 12px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  text-align: start;
+  backdrop-filter: blur(2px);
+  z-index: 1010;
+}
+#hints-bar .settings-inner{ padding:14px }
+#hints-bar .settings-title{
+  margin:0 0 10px; font-size:14px; letter-spacing:.6px; text-transform:uppercase; color:#9bb4c9;
+}
+
+/* פריסת שורת המנורות */
+#hints-bar .hints-row{
+  display:flex; align-items:center; justify-content:flex-start;
+  gap:12px; margin-top:10px; padding:6px var(--hint-pad-x) 4px;
+}
+#hints-bar .bulbs{
+  display:flex; align-items:center; gap:var(--hint-gap);
+}
+#hints-bar .hint{
+  width:var(--hint-size); height:var(--hint-size); object-fit:contain;
+  user-select:none;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
+  transition: transform .06s ease, filter .12s ease;
+}
+#hints-bar .hint[data-state="off"],
+#hints-bar .hint:not([data-state]){ cursor:pointer } /* תיקון הסלקטור */
+#hints-bar .hint:hover{ transform: translateY(-1px); filter: brightness(1.05) }
+#hints-bar .hint:active{ transform: translateY(0) }
+
+/* =========================
+  בר המיוחדים (Advanced bar)
+   ========================= */
+:root{
+  --adv-w: var(--lives-w);                   /* רוחב בר */
+  --adv-right: var(--lives-right);           /* מרחק מהימין */
+  --adv-top: calc(var(--hints-top) + 105px); /* מתחת ל-Hints ברווח קטן */
+
+  /* ריווח פנימי ו-gap */
+  --adv-pad-x: var(--hint-pad-x);            /* ליישור X זהה ל-Hints */
+  --adv-gap: 14px;                           /* (למצב חלופי אם תרצה fixed-gap) */
+
+  /* גדלים בסיסיים */
+  --adv-size: 50px;
+
+  /* שליטה פר-כפתור (לפי data-action) */
+  --adv-size-undo: var(--adv-size);
+  --adv-size-safe: var(--adv-size);
+  --adv-size-mega: var(--adv-size);
+  --adv-size-exterm: var(--adv-size);
+}
+
+#advanced-bar{
+  position: fixed;
+  top: var(--adv-top);
+  right: var(--adv-right);
+  width: var(--adv-w);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,0.07);
+  box-shadow: 0 12px 26px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  text-align: start;
+  backdrop-filter: blur(2px);
+  z-index: 1010;
+}
+
+#advanced-bar .settings-inner{ padding: 14px }
+#advanced-bar .settings-title{
+  margin: 0 0 12px;
+  font-size: 14px;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  color: #9bb4c9;
+}
+
+/* השורה שמכילה את האייקונים */
+#advanced-bar .adv-row{
+  display: block;                             /* לא Flex – משאירים את הפריסה ל-#adv-icons */
+  margin-top: 6px;
+  padding: 6px var(--adv-pad-x) 8px;          /* אותו padding כמו Hints ליישור X */
+}
+
+/* הפריסה של 4 האייקונים: רווחים שווים בין כפתורים, בלי רווחי קצה */
+#adv-icons{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;             /* רווחים שווים בין כפתורים */
+  width: 100%;
+}
+
+/* בסיס לכפתורים */
+#advanced-bar .adv-btn{
+  display: block;
+  width: var(--adv-size);
+  height: var(--adv-size);
+  object-fit: contain;
+  user-select: none;
+  cursor: pointer;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
+  transition: transform .06s ease, filter .12s ease, opacity .15s ease;
+}
+
+
+#adv-icons .adv-btn.disabled{
+  opacity: .4;
+  pointer-events: none;
+  filter: grayscale(1);
+}
+
+/* שליטה פר-כפתור לפי data-action (מתוך ה-JS שלך) */
+#adv-icons .adv-btn[data-action="undo"]{        width: var(--adv-size-undo);  height: var(--adv-size-undo) }
+#adv-icons .adv-btn[data-action="safe"]{        width: var(--adv-size-safe);  height: var(--adv-size-safe) }
+#adv-icons .adv-btn[data-action="mega"]{        width: var(--adv-size-mega);  height: var(--adv-size-mega) }
+#adv-icons .adv-btn[data-action="exterminator"]{width: var(--adv-size-exterm);height: var(--adv-size-exterm) }
+
+#advanced-bar .adv-btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+#advanced-bar .adv-btn:active,
+#advanced-bar .adv-btn.pressed{
+  transform: translateY(0);
+  filter: brightness(.98);
+  opacity: .85;
+}
+
+/* רספונסיביות – שומר קירבה ל-Hints */
+@media (max-width: 900px){
+  :root{
+    --adv-w: var(--lives-w);
+    --adv-right: var(--lives-right);
+    --adv-top: calc(var(--hints-top) + 90px);
+  }
+}
+@media (max-width: 700px){
+  :root{
+    --adv-w: 88vw;
+    --adv-right: 6vw;
+    --adv-top: calc(var(--hints-top) + 90px);
+  }
+}
+
+
+
+/* ===== FX: Harpoon, Blast, Explosions ===== */
+:root{
+  /* טיל – שליטה */
+  --mis-size: 300px;            /* גודל הטיל */
+  --mis-speed: 1800ms;         /* מהירות תזוזה A->B (ברירת מחדל ≈ משך ה-GIF) */
+  --mis-start-offset-x: 80px;   /* היסט נקודת A על ציר X (יחסי לספינה) */
+  --mis-start-offset-y: -12px; /* היסט נקודת A על ציר Y (יחסי לספינה) */
+
+  /* רשף אש בהמראה */
+  --blast-size: 300px;
+  --blast-offset-x: -32px;  /* דוחף שמאלה – מחוץ לקו גוף הספינה */
+  --blast-offset-y: -6px;   /* מרים קצת כלפי מעלה */
+  --blast-duration: 1000ms; /* זמן על המסך */
+
+  /* פיצוץ סופי במרכז הטבלה (B) */
+  --finexp-size: 170px;
+  --finexp-duration: 1200ms;
+
+  /* פיצוץ קטן על 3 מוקשים שנחשפים */
+  --small-exp-size: 64px;          /* גודל ה־GIF */
+  --small-exp-duration: 900ms;     /* משך ה־GIF */
+  --small-exp-static-size: 48px;   /* גודל הסמל הסטטי שנשאר */
+}
+
+.fx-blast{
+  width: var(--blast-size);
+  height: auto;
+  opacity: .95;
+  mix-blend-mode: screen;                 /* שיזרח יפה על הרקע הכהה */
+  filter: drop-shadow(0 0 14px rgba(255,140,0,.45));
+}
+
+/* שכבות אפקטים: אחורי (מאחורי הספינה) + קדמי (מעל הלוח) */
+#fx-layer-back, #fx-layer-front{
+  position: fixed; inset: 0;
+  pointer-events: none;
+}
+#fx-layer-back{  z-index: 850 }  /* הספינה ב-#warship-img היא z-index:900 */
+#fx-layer-front{ z-index: 950 }
+
+/* מיקום מוחלט לפי מרכז (נוח לחישובי left/top = מרכז) */
+.fx-abs{
+  position: fixed;
+  left: 0; top: 0;
+  transform: translate(-50%, -50%);
+  will-change: left, top;
+}
+
+/* ה־GIF שרץ פעם אחת */
+.fx-mini-run{
+  width: var(--small-exp-size);
+  height: auto;
+}
+
+/* הסמל הסטטי שנשאר עד סוף המשחק/Restart */
+.fx-mini-static{
+  width: var(--small-exp-static-size);
+  height: auto;
+  opacity: .95;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.35));
+}
+
+
+.fx-missile{
+  width: var(--mis-size); height: auto;
+  transition: left var(--mis-speed) linear, top var(--mis-speed) linear;
+}
+.fx-blast{
+  width: var(--blast-size); height: auto; opacity: .9;
+}
+.fx-final{
+  width: var(--finexp-size); height: auto;
+}
+.fx-mini{
+  width: var(--small-exp-size); height: auto;
+}

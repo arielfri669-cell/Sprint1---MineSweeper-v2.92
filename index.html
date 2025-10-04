@@ -5,6 +5,7 @@
   <meta charset="utf-8" />
   <title>Mine Sweeper</title>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/bar-style.css" />
   <link rel="icon" href="img/bome.png" type="image/png">
 </head>
 
@@ -25,7 +26,7 @@
     </button>
   </div>
 
- 
+
 
   <img id="warship-img" src="img/warship.png" alt="Warship" loading="lazy" decoding="async">
 
@@ -34,38 +35,63 @@
     <div class="foot-line2">2025</div>
   </footer>
 
-   <aside id="settings-bar" aria-label="Game settings">
-  <div class="settings-inner">
-    <div class="settings-title">Difficulty level</div>
-    <div class="settings-buttons">
-      <button onclick="SetLevel(4)">Beginner</button>
-      <button onclick="SetLevel(8)">Medium </button>
-      <button onclick="SetLevel(12)">Expert </button>
-    </div>
-  </div>
-</aside>
-
-<aside id="lives-bar" aria-label="Remaining Lives">
-  <div class="settings-inner">
-    <div class="settings-title">Remaining Lives</div>
-
-    <div class="lives-row" aria-label="Lives row">
-      <div class="hearts" aria-label="Hearts">
-        <img class="life" src="img/sparkling_heart.gif" alt="Life 1" loading="lazy" decoding="async">
-        <img class="life" src="img/sparkling_heart.gif" alt="Life 2" loading="lazy" decoding="async">
-        <img class="life" src="img/sparkling_heart.gif" alt="Life 3" loading="lazy" decoding="async">
+  <aside id="settings-bar" aria-label="Game settings">
+    <div class="settings-inner">
+      <div class="settings-title">Difficulty level</div>
+      <div class="settings-buttons">
+        <button onclick="SetLevel(4)">Beginner</button>
+        <button onclick="SetLevel(8)">Medium </button>
+        <button onclick="SetLevel(12)">Expert </button>
       </div>
-
-      <!-- כפתור מצב חיים (toggle) -->
-      <button id="life-toggle"
-              class="life-toggle off"
-              type="button"
-              aria-pressed="false"
-              title="Toggle lives mode"
-              onclick="toggleLifeMode(this)"></button>
     </div>
-  </div>
-</aside>
+  </aside>
+
+  <!-- lives-bar -->
+  <aside id="lives-bar" aria-label="Remaining Lives">
+    <div class="settings-inner">
+      <div class="settings-title">Remaining Lives</div>
+
+      <div class="lives-row" aria-label="Lives row">
+        <div class="hearts" aria-label="Hearts">
+          <img class="life" src="img/sparkling_heart.gif" alt="Life 1" loading="lazy" decoding="async">
+          <img class="life" src="img/sparkling_heart.gif" alt="Life 2" loading="lazy" decoding="async">
+          <img class="life" src="img/sparkling_heart.gif" alt="Life 3" loading="lazy" decoding="async">
+        </div>
+
+        <!-- כפתור מצב חיים (toggle) -->
+        <button id="life-toggle" class="life-toggle off" type="button" aria-pressed="false" title="Toggle lives mode"
+          onclick="toggleLifeMode(this)"></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Hints bar -->
+  <aside id="hints-bar" aria-label="Hints">
+    <div class="settings-inner">
+      <div class="settings-title">Hints</div>
+      <div class="hints-row" aria-label="Hints row">
+        <div class="bulbs" aria-label="Bulbs">
+          <img class="hint" src="img/HINT-OFF.png" alt="Hint 1" onclick="onHintClick(this,0)" loading="lazy"
+            decoding="async">
+          <img class="hint" src="img/HINT-OFF.png" alt="Hint 2" onclick="onHintClick(this,1)" loading="lazy"
+            decoding="async">
+          <img class="hint" src="img/HINT-OFF.png" alt="Hint 3" onclick="onHintClick(this,2)" loading="lazy"
+            decoding="async">
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Advanced Operations bar -->
+  <aside id="advanced-bar" aria-label="Advanced Operations">
+    <div class="settings-inner">
+      <div class="settings-title">Advanced Operations</div>
+      <div class="adv-row" aria-label="Advanced actions">
+        <div id="adv-icons"></div>
+      </div>
+    </div>
+  </aside>
+
 
   <table>
     <tbody class="board"></tbody>
@@ -75,8 +101,10 @@
   <script src="js/game.js"></script>
   <script src="js/emoji.js"></script>
   <script src="js/checkgame.js"></script>
-<script src="js/gamebar.js"></script>
-  
+  <script src="js/hearts-bar.js"></script>
+  <script src="js/hintbar.js"></script>
+  <script src="js/advanced-bar.js"></script>
+
 
 
 </body>

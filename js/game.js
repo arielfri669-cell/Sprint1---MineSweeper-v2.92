@@ -30,9 +30,9 @@ var gTimerStartMs = null
 const BOME_IMG = '<img src="img/bome.png" alt="💣">'
 const FLAG__IMG = '<img src="img/flag1.png" alt="F">'
 const EMOJI_HAPPY = '<img src="img/emoji_happy.png" alt="F">'
- 
+
 function initGame() {
-    stopTimer(true)  
+    stopTimer(true)
     gGame.isOn = false                 // עדיין לא פוזרו מוקשים
     gGame.isOver = false
     gGame.markedCount = 0        // איפוס מכסת כמות הדגלים
@@ -42,6 +42,12 @@ function initGame() {
     updateFlagsPanel() // מעדכן את לוח הדגלים
     setEmoji('happy')
     initLivesUI() // אתחול לבבות וכפתור
+    initHintsUI() // אתחול רמזים
+    // if (typeof initAdvancedUI === 'function') initAdvancedUI()
+    initAdvancedUI()
+    if (typeof setExterminatorBtnEnabled === 'function') {
+        setExterminatorBtnEnabled(gLevel.SIZE !== 4)  // מותר רק ב-Medium/Expert
+    }
 
 }
 
@@ -130,7 +136,7 @@ function onCellClicked(elcell, i, j) {
         placeMines(gBoard, i, j)       // אין מוקש בתא הראשון שנלחץ
         setAllMinesNegsCount(gBoard)
         gGame.isOn = true
-         startTimer()
+        startTimer()
     }
 
     if (cell.isRevealed) return       // בדיקה עם התא חשוף כבר
@@ -139,16 +145,16 @@ function onCellClicked(elcell, i, j) {
     // renderBoard(gBoard, '.board')     // מציג מוקש/מספר בהתאם
 
     if (cell.isMine) {
-  if (gLifeModeActive && gLivesRemaining > 0 && !gLifeBreakInProgress) {
-    // במצב חיים: לא חושפים את המוקש, לא מסיימים משחק — רק "שורפים" לב
-    consumeLife()
-    flashSurprised() // חיווי קצר
-    return
-  } else {
-    endGame(false)
-    return
-  }
-}
+        if (gLifeModeActive && gLivesRemaining > 0 && !gLifeBreakInProgress) {
+            // במצב חיים: לא חושפים את המוקש, לא מסיימים משחק — רק "שורפים" לב
+            consumeLife()
+            flashSurprised() // חיווי קצר
+            return
+        } else {
+            endGame(false)
+            return
+        }
+    }
 
     revealCell(i, j)
 
@@ -162,7 +168,7 @@ function onCellClicked(elcell, i, j) {
     if (!gGame.isOver) flashSurprised()
 
     // בדיקת ניצחון 
-    //   if (!gGame.isOver) checkVictory()
+    if (!gGame.isOver) checkVictory()
 }
 
 function onCellMarked(elCell, i, j) {
@@ -200,42 +206,42 @@ function updateFlagsPanel() { // אחריות על הצגת הדגלים בלו�
 }
 
 function startTimer() {
-  if (gTimerInterval) return            // כבר רץ
-  gTimerStartMs = Date.now()
-  updateTimerDom(0)
-  gTimerInterval = setInterval(function () {
-    var elapsed = Date.now() - gTimerStartMs
-    var dayMs = 24 * 60 * 60 * 1000
-    if (elapsed >= dayMs) {
-      elapsed = dayMs
-      updateTimerDom(elapsed)
-      stopTimer(false)                  // עצור ב-24 שעות
-      return
-    }
-    updateTimerDom(elapsed)
-  }, 1000)
+    if (gTimerInterval) return            // כבר רץ
+    gTimerStartMs = Date.now()
+    updateTimerDom(0)
+    gTimerInterval = setInterval(function () {
+        var elapsed = Date.now() - gTimerStartMs
+        var dayMs = 24 * 60 * 60 * 1000
+        if (elapsed >= dayMs) {
+            elapsed = dayMs
+            updateTimerDom(elapsed)
+            stopTimer(false)                  // עצור ב-24 שעות
+            return
+        }
+        updateTimerDom(elapsed)
+    }, 1000)
 }
 
 function updateTimerDom(ms) {
-  var totalSec = Math.floor(ms / 1000)
-  var hh = Math.floor(totalSec / 3600)
-  var mm = Math.floor((totalSec % 3600) / 60)
-  var ss = totalSec % 60
-  var txt =
-    (hh < 10 ? '0' + hh : '' + hh) + ':' +
-    (mm < 10 ? '0' + mm : '' + mm) + ':' +
-    (ss < 10 ? '0' + ss : '' + ss)
-  var el = document.getElementById('timer-text')
-  if (el) el.textContent = txt
+    var totalSec = Math.floor(ms / 1000)
+    var hh = Math.floor(totalSec / 3600)
+    var mm = Math.floor((totalSec % 3600) / 60)
+    var ss = totalSec % 60
+    var txt =
+        (hh < 10 ? '0' + hh : '' + hh) + ':' +
+        (mm < 10 ? '0' + mm : '' + mm) + ':' +
+        (ss < 10 ? '0' + ss : '' + ss)
+    var el = document.getElementById('timer-text')
+    if (el) el.textContent = txt
 }
 
 function stopTimer(resetToZero) {
-  if (gTimerInterval) {
-    clearInterval(gTimerInterval)
-    gTimerInterval = null
-  }
-  if (resetToZero) {
-    gTimerStartMs = null
-    updateTimerDom(0)   // מציג 00:00:00
-  }
+    if (gTimerInterval) {
+        clearInterval(gTimerInterval)
+        gTimerInterval = null
+    }
+    if (resetToZero) {
+        gTimerStartMs = null
+        updateTimerDom(0)   // מציג 00:00:00
+    }
 }
