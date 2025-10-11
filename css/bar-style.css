@@ -158,10 +158,10 @@
   --adv-size: 50px;
 
   /* שליטה פר-כפתור (לפי data-action) */
-  --adv-size-undo: var(--adv-size);
-  --adv-size-safe: var(--adv-size);
+  --adv-size-undo: 65px; /* var(--adv-size); */
+  --adv-size-safe: 65px; /* var(--adv-size); */
   --adv-size-mega: var(--adv-size);
-  --adv-size-exterm: var(--adv-size);
+  --adv-size-exterm: 54px; /* var(--adv-size); */
 }
 
 #advanced-bar{
@@ -198,8 +198,9 @@
 #adv-icons{
   display: flex;
   align-items: center;
-  justify-content: space-between;             /* רווחים שווים בין כפתורים */
-  width: 100%;
+  justify-content: center;   /* מרכז את השורה; השוליים משני הצדדים יהיו סימטריים */
+  gap: var(--adv-gap);       /* <-- רווח קבוע ושווה בין כל זוג כפתורים */
+  /*width: 100%;*/
 }
 
 /* בסיס לכפתורים */
@@ -331,4 +332,16 @@
 }
 .fx-mini{
   width: var(--small-exp-size); height: auto;
+}
+
+/* --- Nudge: מקרב את כפתור UNDO לכיוון SAFE בכמה פיקסלים --- */
+:root{
+  --undo-nudge: 10px; /* שנה ל-4/6/10 לפי כמה שתרצה להתקרב */
+}
+
+#adv-icons .adv-btn[data-action="undo"]{
+  /* מצמצם את המרווח בצד הקרוב ל-SAFE */
+  margin-inline-end: calc(-1 * var(--undo-nudge));
+  /* אם הדפדפן שלך ישן ולא מזהה logical properties, אפשר להחליף ל: */
+  /* margin-right: calc(-1 * var(--undo-nudge)); */
 }

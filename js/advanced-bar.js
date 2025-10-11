@@ -5,15 +5,19 @@ const SAFE_BTN = '<img class="adv-btn" data-action="safe"         src="img/navy_
 const MEGA_BTN = '<img class="adv-btn" data-action="mega"         src="img/navy_mega.png"        alt="Mega Reveal">'
 const EXTERMINATOR_BTN = '<img class="adv-btn" data-action="exterminator" src="img/EXTERMINATOR.png"     alt="Exterminator">'
 
-/* מקורות */
+
 const HARPOON_MIS_SRC = 'img/Harpoon Missile.gif'
 const BLAST_SRC = 'img/blast.gif'
 const FIN_EXP_SRC = 'img/finl-exp.gif'
 const SMALL_EXP_GIF = 'img/collision.gif'
 const SMALL_EXP_STATIC = 'img/bome.png'   // אייקון סטטי שנשאר עד סוף המשחק
 
-/* שימוש חד-פעמי */
+
 var gExterminatorUsed = false
+// === SAFE CLICK ===
+var SAFE_CLICK_LIMIT = 3
+var gSafeClicksUsed = 0
+var gSafeHintTimeoutId = null
 
 function initAdvancedUI() {
   clearFxLayers()                  // מנקה אפקטים ממשחק קודם
@@ -21,6 +25,9 @@ function initAdvancedUI() {
   renderAdvancedBar()
   gExterminatorUsed = false
   setExterminatorBtnEnabled(gLevel && gLevel.SIZE !== 4) // מושבת ב-Beginner
+  gSafeClicksUsed = 0 // SAFE כפתור
+  clearSafeHintHighlight()
+  setSafeBtnEnabled(false) // ← מושבת לפני תחילת המשחק
 }
 
 function renderAdvancedBar() {
@@ -42,7 +49,9 @@ function onAdvancedAction(ev) {
   var act = ev.currentTarget && ev.currentTarget.dataset && ev.currentTarget.dataset.action
   if (!act) return
   if (act === 'exterminator') handleExterminator(ev.currentTarget)
+  else if (act === 'safe')    handleSafeClick(ev.currentTarget) 
 }
+
 
 /* === Exterminator === */
 function handleExterminator(btnEl) {
@@ -63,7 +72,7 @@ function handleExterminator(btnEl) {
   setExterminatorBtnEnabled(false)
   playMissileAudio()
 
-  ensureFxLayers()
+  ensureFxLayers() // מבטיח קיום שכבות לאפקטים (מאחורי הספינה)
   var back = document.getElementById('fx-layer-back')
   var front = document.getElementById('fx-layer-front')
   if (!back || !front) return
@@ -71,11 +80,11 @@ function handleExterminator(btnEl) {
   // נקודת A – מספינה
   var ship = document.getElementById('warship-img')
   if (!ship) return
-  var srect = ship.getBoundingClientRect()
+  var srect = ship.getBoundingClientRect() // נתונים גאומטרים של מלבן הספינה , מיקום
   var startX = srect.left + srect.width * (1 / 3) + cssPx('--mis-start-offset-x', 0)
   var startY = srect.top + srect.height * 0.35 + cssPx('--mis-start-offset-y', 0)
 
-  // נקודת B – מרכז הלוח: קודם table.board (הפנימית), אחרת הקרובה ל-tbody.board, אחרת table הראשון
+  // נקודת B – מרכז הלוח: קודם 
   var boardTable = getBoardTableEl()
   if (!boardTable) return
   var brect = boardTable.getBoundingClientRect()
@@ -83,12 +92,12 @@ function handleExterminator(btnEl) {
   var endY = brect.top + brect.height / 2
 
   // טיל
-  var missile = new Image()
+  var missile = new Image() // יצירת אובייקט תמונה דינמית לאנימציה
   missile.src = HARPOON_MIS_SRC
   missile.className = 'fx-abs fx-missile'
   missile.style.left = startX + 'px'
   missile.style.top = startY + 'px'
-  back.appendChild(missile)
+  back.appendChild(missile) // מכניס את התמונה ל־DOM בתוך שכבת האפקטים האחורית
 
   // רשף – תמיד יופיע (עם cache-bust) וייסגר לבד
   var blast = new Image()
@@ -258,7 +267,7 @@ function shuffle(arr) {
   }
   return arr
 }
-function setExterminatorBtnEnabled(isEnabled) {
+function setExterminatorBtnEnabled(isEnabled) { // מאפשר לחיצה וחסימה של כפתור "קליקבילי
   var el = document.querySelector('#adv-icons .adv-btn[data-action="exterminator"]')
   if (!el) return
   if (isEnabled) { el.classList.remove('disabled'); el.style.pointerEvents = '' }
@@ -287,3 +296,60 @@ function safeRemoveAfter(imgEl, durMs) {
     setTimeout(function () { if (!done) { done = true; remove() } }, durMs + 200)
   }
 }
+
+function setSafeBtnEnabled(isEnabled){ // שייך לכפתור לחיצה בטוחה
+  var el = document.querySelector('#adv-icons .adv-btn[data-action="safe"]')
+  if (!el) return
+  if (isEnabled && gGame.isOn && !gGame.isOver && gSafeClicksUsed < SAFE_CLICK_LIMIT) {
+    el.classList.remove('disabled')
+    el.style.pointerEvents = ''
+  } else {
+    el.classList.add('disabled')
+    el.style.pointerEvents = 'none'
+  }
+}
+
+function handleSafeClick(btnEl){
+  if (!gGame.isOn) return                // ← אסור לפני הקליק הראשון
+  if (gGame.isOver) return
+  if (gSafeClicksUsed >= SAFE_CLICK_LIMIT) { setSafeBtnEnabled(false); return }
+
+  // בוחרים תא בטוח: לא נחשף, לא מסומן, לא מוקש
+  var candidates = []
+  for (var i = 0; i < gBoard.length; i++) {
+    for (var j = 0; j < gBoard[0].length; j++) {
+      var cell = gBoard[i][j]
+      if (!cell.isRevealed && !cell.isMarked && !cell.isMine) {
+        candidates.push({ i:i, j:j })
+      }
+    }
+  }
+  if (!candidates.length) { setSafeBtnEnabled(false); return }
+
+  var pick = candidates[Math.floor(Math.random() * candidates.length)]
+  highlightSafeCell(pick.i, pick.j, 1500)
+
+  gSafeClicksUsed++
+  if (gSafeClicksUsed >= SAFE_CLICK_LIMIT) setSafeBtnEnabled(false)
+}
+
+// הדגשה זמנית
+function highlightSafeCell(i, j, ms){
+  clearSafeHintHighlight()
+  var el = document.querySelector('.cell-' + i + '-' + j)
+  if (!el) return
+  el.classList.add('safe-hint')
+  if (gSafeHintTimeoutId) clearTimeout(gSafeHintTimeoutId)
+  gSafeHintTimeoutId = setTimeout(function(){
+    if (el) el.classList.remove('safe-hint')
+  }, ms || 1500)
+}
+
+// ניקוי הדגשה + טיימר
+function clearSafeHintHighlight(){
+  if (gSafeHintTimeoutId) { clearTimeout(gSafeHintTimeoutId); gSafeHintTimeoutId = null }
+  var els = document.querySelectorAll('.cell.safe-hint')
+  for (var k = 0; k < els.length; k++) els[k].classList.remove('safe-hint')
+}
+
+

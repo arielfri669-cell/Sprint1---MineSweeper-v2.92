@@ -6,7 +6,7 @@ const HINT_OFF = '<img src="img/HINT-OFF.png">'
 /* מצב פנימי של שלוש המנורות: false=OFF, true=ON */
 var gHintsState = [false, false, false]
 
-/* אם תרצה שמצב התחלתי יהיה דלוק במקום כבוי, שנה ל-true */
+
 var HINTS_DEFAULT_ON = false  //  החלפה ל-true תדליק את כולן כברירת מחדל
 
 /* (קריאה מתוך initGame) */
@@ -28,6 +28,7 @@ function initHintsUI(){
 
 /* לחיצה על מנורה ספציפית */
 function onHintClick(el, idx){
+  
   // אם כבר דלוקה — אין פעולה
   if (gHintsState[idx]) return
 
@@ -36,4 +37,6 @@ function onHintClick(el, idx){
   el.src = 'img/HINT-ON.png'
   el.dataset.state = 'on'
   el.style.cursor = 'default'
+
+
 }

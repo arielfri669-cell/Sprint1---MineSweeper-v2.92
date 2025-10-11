@@ -4,13 +4,24 @@
 function endGame(isWin) {   // מבצע פעולות לסוף משחק
     gGame.isOver = true                   //   חוסם המשך פעולות
     stopTimer(false)
+    
+    if (typeof clearSafeHintHighlight === 'function') clearSafeHintHighlight()
+    if (typeof setSafeBtnEnabled === 'function') setSafeBtnEnabled(false)
+
     if (!isWin) {
         revealAllMines(gBoard)              // הפסד: חשוף את כל המוקשים
         setEmoji('dead')
         renderBoard(gBoard, '.board')
     } else {
         setEmoji('win')                     // ניצחון: תישאר עם הדגלים
+
+        /* 00009 */ // שמירת שיא רק בניצחון: חישוב זמן שחלף ושמירה אם עדיף
+        if (typeof window.gTimerStartMs === 'number' && window.gTimerStartMs) {
+            var finishMs = Date.now() - window.gTimerStartMs
+            saveBestMsIfBetter(finishMs)
+        }
     }
+
 }
 
 function revealAllMines(board) {
@@ -46,24 +57,40 @@ function allFlagsCorrect(board) {
 }
 
 function revealCell(i, j) {
-  var cell = gBoard[i][j]
-  if (cell.isRevealed || cell.isMarked) return false
-  cell.isRevealed = true
-  gGame.revealedCount++
-  return true
+    var cell = gBoard[i][j]
+    if (cell.isRevealed || cell.isMarked) return false
+    cell.isRevealed = true
+    gGame.revealedCount++
+    return true
 }
 
 function expandReveal(board, i, j) {
-  // מרחיבים רק אם התא המקורי נטול שכנים-מוקשים
-  if (board[i][j].minesAroundCount !== 0) return
-  for (var r = i - 1; r <= i + 1; r++) {
-    if (r < 0 || r >= board.length) continue
-    for (var c = j - 1; c <= j + 1; c++) {
-      if (c < 0 || c >= board[0].length) continue
-      if (r === i && c === j) continue
-      var neighbor = board[r][c]
-      if (neighbor.isMine || neighbor.isMarked) continue
-      revealCell(r, c)
+    if (!board || !board[i] || !board[i][j]) return
+    var cell = board[i][j]
+
+    if (cell.isMine || cell.isMarked) return
+
+    if (!cell.isRevealed) revealCell(i, j)
+
+    if (cell.minesAroundCount !== 0) return
+
+    // תא "אפס": מתפשטים לשכנים
+    for (var r = i - 1; r <= i + 1; r++) {
+        if (r < 0 || r >= board.length) continue
+        for (var c = j - 1; c <= j + 1; c++) {
+            if (c < 0 || c >= board[0].length) continue
+            if (r === i && c === j) continue
+
+            var neighbor = board[r][c]
+            if (neighbor.isMine || neighbor.isMarked || neighbor.isRevealed) continue
+
+            if (neighbor.minesAroundCount === 0) {
+                // אפס – נכנסים רקורסיבית
+                expandReveal(board, r, c)
+            } else {
+                // מספר – חושפים חד-פעמי (בלי רקורסיה)
+                revealCell(r, c)
+            }
+        }
     }
-  }
 }

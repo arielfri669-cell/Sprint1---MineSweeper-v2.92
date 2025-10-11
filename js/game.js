@@ -45,6 +45,7 @@ function initGame() {
     initHintsUI() // אתחול רמזים
     // if (typeof initAdvancedUI === 'function') initAdvancedUI()
     initAdvancedUI()
+    updateBestTimePanel()
     if (typeof setExterminatorBtnEnabled === 'function') {
         setExterminatorBtnEnabled(gLevel.SIZE !== 4)  // מותר רק ב-Medium/Expert
     }
@@ -137,6 +138,7 @@ function onCellClicked(elcell, i, j) {
         setAllMinesNegsCount(gBoard)
         gGame.isOn = true
         startTimer()
+        if (typeof setSafeBtnEnabled === 'function') setSafeBtnEnabled(true) 
     }
 
     if (cell.isRevealed) return       // בדיקה עם התא חשוף כבר
@@ -154,6 +156,8 @@ function onCellClicked(elcell, i, j) {
             endGame(false)
             return
         }
+
+  
     }
 
     revealCell(i, j)

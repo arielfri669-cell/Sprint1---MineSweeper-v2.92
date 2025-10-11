@@ -85,14 +85,36 @@ body{
   color:var(--ink);
 }
 
+/* --- פאנלים עליונים: BestTime + Flags + Timer --- */
+#besttime-panel{
+  display:inline-block;
+  margin-right:24px;           /* רווח שווה מצד שמאל של ה־Flags */
+  padding:4px 8px;
+  font-variant-numeric:tabular-nums;
+  opacity:.9;
+}
+#flags-panel{
+  margin:10px auto 24px;
+  display:inline-block;
+  padding:4px 8px;
+}
+#timer-panel{
+  display:inline-block;
+  margin-left:24px;            /* רווח בין דגלים ללוח טיימר */
+  padding:4px 8px;
+  font-variant-numeric:tabular-nums;
+  opacity:.9;
+}
+
 /* פאנלים ממוסגרים */
-#flags-panel, #timer-panel{
+#besttime-panel, #flags-panel, #timer-panel{
   background: var(--panel);
   border: 1px solid var(--panel-border);
   border-radius: 12px;
   box-shadow: 0 1px 0 rgba(255,255,255,.05) inset, 0 8px 20px rgba(0,0,0,.25);
   color: var(--muted);
 }
+
 
 /* מסגרת סביב הלוח (לא חובה, אבל תואם ל"טעם" של ה-Navy) */
 .board{ border-spacing:6px }
@@ -187,3 +209,24 @@ body{ padding-bottom: calc(1cm + 80px) }
   pointer-events: none;
   filter: drop-shadow(0 10px 22px rgba(0,0,0,.35));
 }
+
+/* הדגשת תא ש-SafeClick המליץ עליו (ל-1.5 שניות) */
+.cell.safe-hint{
+  outline: 2px solid #2fcb5a;
+  box-shadow: 0 0 0 3px rgba(47,203,90,.25) inset, 0 0 10px rgba(47,203,90,.55);
+  position: relative;
+}
+.cell.safe-hint::after{
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 2px;
+  box-shadow: 0 0 18px rgba(47,203,90,.6);
+  pointer-events: none;
+  animation: safePulse .5s ease-in-out 3;
+}
+@keyframes safePulse{
+  0%{ transform: scale(1) }
+  50%{ transform: scale(1.03) }
+  100%{ transform: scale(1) }
+}
+
