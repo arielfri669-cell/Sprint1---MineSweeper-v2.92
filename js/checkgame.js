@@ -4,7 +4,8 @@
 function endGame(isWin) {   // מבצע פעולות לסוף משחק
     gGame.isOver = true                   //   חוסם המשך פעולות
     stopTimer(false)
-    
+
+    if (typeof setUndoBtnEnabled === 'function') setUndoBtnEnabled(false)
     if (typeof clearSafeHintHighlight === 'function') clearSafeHintHighlight()
     if (typeof setSafeBtnEnabled === 'function') setSafeBtnEnabled(false)
 

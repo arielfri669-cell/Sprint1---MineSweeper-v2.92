@@ -19,6 +19,10 @@ var SAFE_CLICK_LIMIT = 3
 var gSafeClicksUsed = 0
 var gSafeHintTimeoutId = null
 
+var MAX_UNDO = 5
+var gUndoStack = []
+var gUndoUses = 0
+
 function initAdvancedUI() {
   clearFxLayers()                  // מנקה אפקטים ממשחק קודם
   ensureFxLayers()
@@ -28,6 +32,7 @@ function initAdvancedUI() {
   gSafeClicksUsed = 0 // SAFE כפתור
   clearSafeHintHighlight()
   setSafeBtnEnabled(false) // ← מושבת לפני תחילת המשחק
+  resetUndoOnNewGame()
 }
 
 function renderAdvancedBar() {
@@ -49,7 +54,8 @@ function onAdvancedAction(ev) {
   var act = ev.currentTarget && ev.currentTarget.dataset && ev.currentTarget.dataset.action
   if (!act) return
   if (act === 'exterminator') handleExterminator(ev.currentTarget)
-  else if (act === 'safe')    handleSafeClick(ev.currentTarget) 
+  else if (act === 'safe') handleSafeClick(ev.currentTarget)
+  else if (act === 'undo') handleUndo(ev.currentTarget)
 }
 
 
@@ -297,7 +303,7 @@ function safeRemoveAfter(imgEl, durMs) {
   }
 }
 
-function setSafeBtnEnabled(isEnabled){ // שייך לכפתור לחיצה בטוחה
+function setSafeBtnEnabled(isEnabled) { // שייך לכפתור לחיצה בטוחה
   var el = document.querySelector('#adv-icons .adv-btn[data-action="safe"]')
   if (!el) return
   if (isEnabled && gGame.isOn && !gGame.isOver && gSafeClicksUsed < SAFE_CLICK_LIMIT) {
@@ -309,7 +315,7 @@ function setSafeBtnEnabled(isEnabled){ // שייך לכפתור לחיצה בט�
   }
 }
 
-function handleSafeClick(btnEl){
+function handleSafeClick(btnEl) {
   if (!gGame.isOn) return                // ← אסור לפני הקליק הראשון
   if (gGame.isOver) return
   if (gSafeClicksUsed >= SAFE_CLICK_LIMIT) { setSafeBtnEnabled(false); return }
@@ -320,7 +326,7 @@ function handleSafeClick(btnEl){
     for (var j = 0; j < gBoard[0].length; j++) {
       var cell = gBoard[i][j]
       if (!cell.isRevealed && !cell.isMarked && !cell.isMine) {
-        candidates.push({ i:i, j:j })
+        candidates.push({ i: i, j: j })
       }
     }
   }
@@ -334,22 +340,117 @@ function handleSafeClick(btnEl){
 }
 
 // הדגשה זמנית
-function highlightSafeCell(i, j, ms){
+function highlightSafeCell(i, j, ms) {
   clearSafeHintHighlight()
   var el = document.querySelector('.cell-' + i + '-' + j)
   if (!el) return
   el.classList.add('safe-hint')
   if (gSafeHintTimeoutId) clearTimeout(gSafeHintTimeoutId)
-  gSafeHintTimeoutId = setTimeout(function(){
+  gSafeHintTimeoutId = setTimeout(function () {
     if (el) el.classList.remove('safe-hint')
   }, ms || 1500)
 }
 
 // ניקוי הדגשה + טיימר
-function clearSafeHintHighlight(){
+function clearSafeHintHighlight() {
   if (gSafeHintTimeoutId) { clearTimeout(gSafeHintTimeoutId); gSafeHintTimeoutId = null }
   var els = document.querySelectorAll('.cell.safe-hint')
   for (var k = 0; k < els.length; k++) els[k].classList.remove('safe-hint')
 }
 
+/*==== UNDO ===== */
+function getUndoBtnEl() {
+  return document.querySelector('#adv-icons .adv-btn[data-action="undo"]')
+}
 
+function setUndoBtnEnabled(isEnabled) {
+  var el = getUndoBtnEl()
+  if (!el) return
+  if (isEnabled) { el.classList.remove('disabled'); el.style.pointerEvents = '' }
+  else { el.classList.add('disabled'); el.style.pointerEvents = 'none' }
+}
+
+function refreshUndoBtn() {
+  var canUse = !!(gGame && gGame.isOn && !gGame.isOver && gUndoUses < MAX_UNDO && gUndoStack.length > 0)
+  setUndoBtnEnabled(canUse)
+}
+
+function deepCloneBoard(board) {
+  var size = board.length
+  var copy = new Array(size)
+  for (var i = 0; i < size; i++) {
+    copy[i] = new Array(board[i].length)
+    for (var j = 0; j < board[i].length; j++) {
+      var c = board[i][j]
+      copy[i][j] = {
+        minesAroundCount: c.minesAroundCount,
+        isRevealed: c.isRevealed,
+        isMine: c.isMine,
+        isMarked: c.isMarked,          // נשמר בסנאפשוט, אך נתעלם ממנו בשחזור
+        wasExterminated: !!c.wasExterminated
+      }
+    }
+  }
+  return copy
+}
+
+function pushUndoSnapshot(reason) {
+  // נרשם רק על פעולות לוח במהלך משחק חי
+  if (!gGame || !gGame.isOn || gGame.isOver) return
+  try {
+    var snap = {
+      board: deepCloneBoard(gBoard),
+      revealedCount: gGame.revealedCount,
+      markedCount: gGame.markedCount   // ייתעלם בשחזור כדי לשמר דגלים נוכחיים
+    }
+    gUndoStack.push(snap)
+    if (gUndoStack.length > 60) gUndoStack.shift()
+    refreshUndoBtn()
+  } catch (e) { }
+}
+function handleUndo(btnEl){
+  if (!gGame || !gGame.isOn || gGame.isOver) { refreshUndoBtn(); return }
+  if (gUndoUses >= MAX_UNDO) { setUndoBtnEnabled(false); return }
+  if (!gUndoStack.length) { setUndoBtnEnabled(false); return }
+
+  // שומרים את מצב הדגלים הנוכחי לפני השחזור
+  var flags = []
+  var rows = gBoard.length, cols = gBoard[0].length
+  for (var i = 0; i < rows; i++){
+    flags[i] = []
+    for (var j = 0; j < cols; j++){
+      flags[i][j] = !!gBoard[i][j].isMarked
+    }
+  }
+
+  var snap = gUndoStack.pop()
+
+  // משחזרים מצב לוח (חשיפות/מוקשים/מספרים)
+  gBoard = deepCloneBoard(snap.board)
+  gGame.revealedCount = snap.revealedCount
+
+  // מחילים בחזרה את הדגלים העכשוויים (לא מחזירים לאחור דגלים!)
+  var newMarked = 0
+  for (var r = 0; r < rows; r++){
+    for (var c = 0; c < cols; c++){
+      // משמרים דגל רק אם התא נשאר מוסתר אחרי השחזור
+      var keep = flags[r][c] && !gBoard[r][c].isRevealed
+      gBoard[r][c].isMarked = keep
+      if (keep) newMarked++
+    }
+  }
+  gGame.markedCount = newMarked
+
+  gUndoUses++
+  renderBoard(gBoard, '.board')
+  if (typeof updateFlagsPanel === 'function') updateFlagsPanel()
+  if (!gGame.isOver && typeof flashSurprised === 'function') flashSurprised()
+
+  refreshUndoBtn()
+}
+
+function resetUndoOnNewGame(){
+  gUndoStack = []
+  gUndoUses = 0
+  setUndoBtnEnabled(false) // כבוי עד מהלך לוח ראשון
+}

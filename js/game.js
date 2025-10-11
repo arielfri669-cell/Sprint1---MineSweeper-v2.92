@@ -138,7 +138,7 @@ function onCellClicked(elcell, i, j) {
         setAllMinesNegsCount(gBoard)
         gGame.isOn = true
         startTimer()
-        if (typeof setSafeBtnEnabled === 'function') setSafeBtnEnabled(true) 
+        if (typeof setSafeBtnEnabled === 'function') setSafeBtnEnabled(true)
     }
 
     if (cell.isRevealed) return       // בדיקה עם התא חשוף כבר
@@ -157,8 +157,9 @@ function onCellClicked(elcell, i, j) {
             return
         }
 
-  
+
     }
+    if (typeof pushUndoSnapshot === 'function') pushUndoSnapshot('reveal')
 
     revealCell(i, j)
 
