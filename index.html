@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>Mine Sweeper</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/bar-style.css" />
+  <link rel="stylesheet" href="css/sound-bar.css" />
   <link rel="icon" href="img/bome.png" type="image/png">
 </head>
 
 <body onload="initGame()">
   <h1>Mine Sweeper</h1>
-
 
   <div id="besttime-panel" aria-label="Best Time">
     Best Time: <span id="besttime-text">--:--:--</span>
@@ -31,12 +30,7 @@
     </button>
   </div>
 
-
-
   <img id="warship-img" src="img/warship.png" alt="Warship" loading="lazy" decoding="async">
-  <!-- לשים פוטר בסוף -->
-
-
 
   <aside id="settings-bar" aria-label="Game settings">
     <div class="settings-inner">
@@ -53,17 +47,13 @@
   <aside id="lives-bar" aria-label="Remaining Lives">
     <div class="settings-inner">
       <div class="settings-title">Remaining Lives</div>
-
       <div class="lives-row" aria-label="Lives row">
         <div class="hearts" aria-label="Hearts">
           <img class="life" src="img/sparkling_heart.gif" alt="Life 1" loading="lazy" decoding="async">
           <img class="life" src="img/sparkling_heart.gif" alt="Life 2" loading="lazy" decoding="async">
           <img class="life" src="img/sparkling_heart.gif" alt="Life 3" loading="lazy" decoding="async">
         </div>
-
-        <!-- כפתור מצב חיים (toggle) -->
-        <button id="life-toggle" class="life-toggle off" type="button" aria-pressed="false" title="Toggle lives mode"
-          onclick="toggleLifeMode(this)"></button>
+        <button id="life-toggle" class="life-toggle off" type="button" aria-pressed="false" title="Toggle lives mode" onclick="toggleLifeMode(this)"></button>
       </div>
     </div>
   </aside>
@@ -74,12 +64,9 @@
       <div class="settings-title">Hints</div>
       <div class="hints-row" aria-label="Hints row">
         <div class="bulbs" aria-label="Bulbs">
-          <img class="hint" src="img/HINT-OFF.png" alt="Hint 1" onclick="onHintClick(this,0)" loading="lazy"
-            decoding="async">
-          <img class="hint" src="img/HINT-OFF.png" alt="Hint 2" onclick="onHintClick(this,1)" loading="lazy"
-            decoding="async">
-          <img class="hint" src="img/HINT-OFF.png" alt="Hint 3" onclick="onHintClick(this,2)" loading="lazy"
-            decoding="async">
+          <img class="hint" src="img/HINT-OFF.png" alt="Hint 1" onclick="onHintClick(this,0)" loading="lazy" decoding="async">
+          <img class="hint" src="img/HINT-OFF.png" alt="Hint 2" onclick="onHintClick(this,1)" loading="lazy" decoding="async">
+          <img class="hint" src="img/HINT-OFF.png" alt="Hint 3" onclick="onHintClick(this,2)" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
@@ -95,11 +82,137 @@
     </div>
   </aside>
 
+  <!--  SOUND BAR -->
+  <aside id="sound-bar" aria-label="Sound & Music">
+    <div class="settings-inner">
+      <div class="settings-title">SOUND & MUSIC</div>
+
+      <div class="sound-grid">
+        <!-- צד שמאל: קטגוריות/תתי-קטגוריות + בחירת שירים -->
+        <div class="sound-left">
+          <div class="cat sfx"></div>
+
+          <div class="cat music">
+            <div class="cat-title">MUSIC LIST:</div>
+
+            <div class="subcat">
+              <div class="sub-title">80's</div>
+
+              <label class="container">
+                <input class="music-choice" type="checkbox" id="m80-1" data-group="music80s" data-index="0" checked>
+                <div class="checkmark"></div><span class="label-text">80s-1.mp3</span>
+              </label>
+
+              <label class="container">
+                <input class="music-choice" type="checkbox" id="m80-2" data-group="music80s" data-index="1">
+                <div class="checkmark"></div><span class="label-text">80s-2.mp3</span>
+              </label>
+
+              <label class="container">
+                <input class="music-choice" type="checkbox" id="m80-3" data-group="music80s" data-index="2">
+                <div class="checkmark"></div><span class="label-text">80s-3.mp3</span>
+              </label>
+            </div>
+
+            <div class="subcat">
+              <div class="sub-title">Chillout</div>
+
+              <label class="container">
+                <input class="music-choice" type="checkbox" id="ch-1" data-group="musicChill" data-index="0">
+                <div class="checkmark"></div><span class="label-text">Chil-1.mp3</span>
+              </label>
+
+              <label class="container">
+                <input class="music-choice" type="checkbox" id="ch-2" data-group="musicChill" data-index="1">
+                <div class="checkmark"></div><span class="label-text">Chil-2.mp3</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- צד ימין: שני ה-toggle ההולוגרפיים (MUSIC מעל SFX) + משנה עוצמה -->
+        <div class="sound-right">
+          <!-- MUSIC -->
+          <div class="toggle-block">
+            <div class="toggle-title">MUSIC</div>
+            <div class="toggle-container">
+              <div class="toggle-wrap">
+                <input class="toggle-input" id="music-toggle-input" type="checkbox" />
+                <label class="toggle-track" for="music-toggle-input">
+                  <div class="track-lines"><div class="track-line"></div></div>
+                  <div class="toggle-thumb">
+                    <div class="thumb-core"></div>
+                    <div class="thumb-inner"></div>
+                    <div class="thumb-scan"></div>
+                  </div>
+                  <div class="toggle-data">
+                    <div class="data-text off">OFF</div>
+                    <div class="data-text on">ON</div>
+                    <div class="status-indicator off"></div>
+                    <div class="status-indicator on"></div>
+                  </div>
+                  <div class="energy-rings">
+                    <div class="energy-ring"></div>
+                    <div class="energy-ring"></div>
+                    <div class="energy-ring"></div>
+                  </div>
+                  <div class="toggle-reflection"></div>
+                  <div class="holo-glow"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- SFX -->
+          <div class="toggle-block">
+            <div class="toggle-title">SFX</div>
+            <div class="toggle-container">
+              <div class="toggle-wrap">
+                <input class="toggle-input" id="sfx-toggle-input" type="checkbox" checked />
+                <label class="toggle-track" for="sfx-toggle-input">
+                  <div class="track-lines"><div class="track-line"></div></div>
+                  <div class="toggle-thumb">
+                    <div class="thumb-core"></div>
+                    <div class="thumb-inner"></div>
+                    <div class="thumb-scan"></div>
+                  </div>
+                  <div class="toggle-data">
+                    <div class="data-text off">OFF</div>
+                    <div class="data-text on">ON</div>
+                    <div class="status-indicator off"></div>
+                    <div class="status-indicator on"></div>
+                  </div>
+                  <div class="energy-rings">
+                    <div class="energy-ring"></div>
+                    <div class="energy-ring"></div>
+                    <div class="energy-ring"></div>
+                  </div>
+                  <div class="toggle-reflection"></div>
+                  <div class="holo-glow"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- משנה עוצמה (פיידר אנכי): גרסה סופית -->
+          <div id="volume-controls" class="volume-controls" aria-label="Volume">
+            <div class="vol-body">
+              <div class="vol-rail">
+                <span id="volume-led" class="vu-led" aria-hidden="true"></span>
+                <!-- תוספת orient="vertical" לשיפור תאימות בפיירפוקס -->
+                <input id="volume-slider" class="vol-slider" type="range" min="1" max="100" step="1" value="50" aria-label="Music volume" orient="vertical" />
+              </div>
+              <div class="vol-ticks" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /.sound-grid -->
+    </div>
+  </aside>
 
   <table>
     <tbody class="board"></tbody>
   </table>
-
 
   <footer id="site-footer" aria-label="Copyright">
     <div class="foot-line1">© Ariel Fridman</div>
@@ -114,9 +227,6 @@
   <script src="js/hearts-bar.js"></script>
   <script src="js/hintbar.js"></script>
   <script src="js/advanced-bar.js"></script>
-
-
-
+  <script src="js/sound-bar.js"></script>
 </body>
-
 </html>

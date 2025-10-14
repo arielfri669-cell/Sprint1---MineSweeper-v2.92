@@ -10,16 +10,25 @@ function endGame(isWin) {   // מבצע פעולות לסוף משחק
     if (typeof setSafeBtnEnabled === 'function') setSafeBtnEnabled(false)
 
     if (!isWin) {
+        if (typeof playSfx === 'function') playSfx('lose')
+
         revealAllMines(gBoard)              // הפסד: חשוף את כל המוקשים
         setEmoji('dead')
         renderBoard(gBoard, '.board')
     } else {
+        if (typeof playSfx === 'function') playSfx('victory')
+        setTimeout(function () {
+            if (typeof playSfx === 'function') playSfx('winEnd')
+        }, 400)
+
         setEmoji('win')                     // ניצחון: תישאר עם הדגלים
 
         /* 00009 */ // שמירת שיא רק בניצחון: חישוב זמן שחלף ושמירה אם עדיף
         if (typeof window.gTimerStartMs === 'number' && window.gTimerStartMs) {
             var finishMs = Date.now() - window.gTimerStartMs
-            saveBestMsIfBetter(finishMs)
+            var didBest = saveBestMsIfBetter(finishMs)
+            if (didBest && typeof playSfx === 'function') playSfx('newRecord')
+          
         }
     }
 

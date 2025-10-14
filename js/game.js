@@ -45,6 +45,7 @@ function initGame() {
     initHintsUI() // אתחול רמזים
     // if (typeof initAdvancedUI === 'function') initAdvancedUI()
     initAdvancedUI()
+    if (typeof initSoundUI === 'function') initSoundUI()
     updateBestTimePanel()
     if (typeof setExterminatorBtnEnabled === 'function') {
         setExterminatorBtnEnabled(gLevel.SIZE !== 4)  // מותר רק ב-Medium/Expert
@@ -85,6 +86,8 @@ function placeMines(board, forbidI, forbidJ) {
 }
 
 function SetLevel(size) {
+    if (typeof playSfx === 'function') playSfx('level')
+
     gLevel.SIZE = size
     if (size === 4) gLevel.MINES = 2
     else if (size === 8) gLevel.MINES = 14
@@ -147,6 +150,7 @@ function onCellClicked(elcell, i, j) {
     // renderBoard(gBoard, '.board')     // מציג מוקש/מספר בהתאם
 
     if (cell.isMine) {
+        if (typeof playSfx === 'function') playSfx('mine')
         if (gLifeModeActive && gLivesRemaining > 0 && !gLifeBreakInProgress) {
             // במצב חיים: לא חושפים את המוקש, לא מסיימים משחק — רק "שורפים" לב
             consumeLife()
@@ -162,6 +166,7 @@ function onCellClicked(elcell, i, j) {
     if (typeof pushUndoSnapshot === 'function') pushUndoSnapshot('reveal')
 
     revealCell(i, j)
+    if (!cell.isMine) { if (typeof playSfx === 'function') playSfx('cell') }
 
     // אם 0 שכנים ,הרחבת שכנים
     if (cell.minesAroundCount === 0) {
